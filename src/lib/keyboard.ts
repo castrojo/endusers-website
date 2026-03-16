@@ -17,5 +17,5 @@ export function initKeyboard(opts: Opts): void {
   });
 }
 
-const TABS: TabId[] = ['everyone', 'endusers', 'platinum', 'gold', 'silver', 'community'];
+const TABS: TabId[] = ['everyone', 'end-users', 'platinum', 'gold', 'silver', 'academic'];
 export function tabFromNumber(n: number): TabId { return TABS[n - 1] ?? 'everyone'; }

@@ -27,3 +27,4 @@ src/data/
 public/data/
 .sync-cache/
 endusers-go/endusers
+test-results/

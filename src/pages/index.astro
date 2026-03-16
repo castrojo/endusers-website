@@ -16,6 +16,7 @@ try {
 const endUserCount = members.filter(m => m.isEndUser).length;
 const totalFunding = members.reduce((sum, m) => sum + (m.totalFunding ?? 0), 0);
 const industries = [...new Set(members.flatMap(m => m.industries ?? []).filter(Boolean))].sort();
+const countries = [...new Set(members.map(m => m.country).filter(Boolean))].sort() as string[];
 const heroes = selectHeroes(members);
 
 const STATIC_COUNT = 30;
@@ -33,6 +34,7 @@ const heroEntries = [
   endUserCount={endUserCount}
   totalFunding={totalFunding}
   industries={industries}
+  countries={countries}
 >
   <div slot="heroes">
     {heroEntries.length > 0 && (
@@ -74,6 +76,7 @@ const heroEntries = [
   let currentTab: TabId = 'everyone';
   let currentQuery = '';
   let currentIndustry = '';
+  let currentRegion = '';
 
   async function loadAllMembers() {
     try {
@@ -96,16 +99,19 @@ const heroEntries = [
     if (currentIndustry) {
       filtered = filtered.filter(m => (m.industries ?? []).includes(currentIndustry));
     }
+    if (currentRegion) {
+      filtered = filtered.filter(m => m.country === currentRegion);
+    }
     if (filtered.length === 0 && (currentQuery || currentTab !== 'everyone')) {
       grid.style.display = 'none';
       noResults.style.display = 'block';
       searchCount.textContent = '';
-      statShowing.textContent = 'Showing 0 results';
+      statShowing.textContent = '0';
     } else {
       noResults.style.display = 'none';
       grid.style.display = '';
       grid.innerHTML = filtered.map(renderCard).join('\n');
-      const label = `Showing ${filtered.length.toLocaleString()}`;
+      const label = String(filtered.length);
       statShowing.textContent = label;
       searchCount.textContent = currentQuery ? String(filtered.length) : '';
     }
@@ -127,7 +133,7 @@ const heroEntries = [
     onTheme: () => { const btn = document.getElementById('theme-toggle') as HTMLButtonElement; btn?.click(); },
     onTab: (n) => {
       const tab = tabFromNumber(n);
-      const btn = document.querySelector(`.tab-button[data-tab="${tab}"]`) as HTMLButtonElement;
+      const btn = document.querySelector(`.section-link[data-tab="${tab}"]`) as HTMLButtonElement;
       btn?.click();
     },
     onEscape: () => {
@@ -143,6 +149,11 @@ const heroEntries = [
 
   document.getElementById('industry-filter')?.addEventListener('change', (e) => {
     currentIndustry = (e.target as HTMLSelectElement).value;
+    applyFilters();
+  });
+
+  document.getElementById('region-filter')?.addEventListener('change', (e) => {
+    currentRegion = (e.target as HTMLSelectElement).value;
     applyFilters();
   });
 </script>

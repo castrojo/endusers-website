@@ -4,6 +4,7 @@ export interface SafeMember {
   twitterUrl?: string; linkedInUrl?: string; city?: string; country?: string;
   countryFlag?: string; employeesMin?: number; employeesMax?: number;
   totalFunding?: number; industries?: string[]; stockExchange?: string; ticker?: string;
+  region?: string; companyType?: string;
   updatedAt: string;
 }
 

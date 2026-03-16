@@ -13,10 +13,10 @@ const members = [
 
 describe('filterByTab', () => {
   it('everyone returns all', () => expect(filterByTab(members, 'everyone')).toHaveLength(5));
-  it('endusers returns end users', () => expect(filterByTab(members, 'endusers').every(m => m.isEndUser)).toBe(true));
+  it('endusers returns end users', () => expect(filterByTab(members, 'end-users').every(m => m.isEndUser)).toBe(true));
   it('platinum returns platinum', () => expect(filterByTab(members, 'platinum').every(m => m.tier === 'Platinum')).toBe(true));
   it('community returns academic and nonprofit', () => {
-    const result = filterByTab(members, 'community');
+    const result = filterByTab(members, 'academic');
     expect(result.every(m => m.tier === 'Academic' || m.tier === 'Nonprofit')).toBe(true);
   });
   it('gold returns only gold', () => expect(filterByTab(members, 'gold').every(m => m.tier === 'Gold')).toBe(true));
