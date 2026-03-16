@@ -39,7 +39,7 @@ const base = import.meta.env.BASE_URL;
       document.documentElement.setAttribute('data-theme', getTheme());
     })();
   </script>
-  <style>
+  <style is:global>
     :root {
       --color-bg-default: #ffffff; --color-bg-secondary: #f6f8fa; --color-bg-tertiary: #eaeef2;
       --color-border-default: #d0d7de; --color-text-primary: #24292f; --color-text-secondary: #57606a;
