@@ -143,12 +143,37 @@ const heroEntries = [
     applyFilters();
   });
 
+  const visibleCards = () =>
+    Array.from(document.querySelectorAll<HTMLElement>('.member-card, .hero-card'))
+      .filter(c => c.offsetParent !== null && c.style.display !== 'none');
+
+  let focusedIdx = -1;
+
+  function resetFocus() {
+    document.querySelectorAll('.keyboard-focused')
+      .forEach(c => c.classList.remove('keyboard-focused'));
+    focusedIdx = -1;
+  }
+
+  function focusCard(idx: number) {
+    const all = visibleCards();
+    if (all.length === 0) return;
+    focusedIdx = Math.max(0, Math.min(idx, all.length - 1));
+    all.forEach((c, i) => c.classList.toggle('keyboard-focused', i === focusedIdx));
+    all[focusedIdx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    const liveRegion = document.getElementById('kbd-live-region');
+    if (liveRegion) {
+      const name = all[focusedIdx].querySelector('.card-name, .member-name, .hero-name, h3, h4')?.textContent ?? '';
+      liveRegion.textContent = `Focused: ${name}`;
+    }
+  }
+
+  document.querySelectorAll('.section-link[data-tab]').forEach(btn => {
+    btn.addEventListener('click', resetFocus);
+  });
+
   initKeyboard({
     onSearch: () => searchInput?.focus(),
-    onHelp: () => {
-      document.getElementById('keyboard-help-modal')?.classList.toggle('visible');
-      document.getElementById('keyboard-help-backdrop')?.classList.toggle('visible');
-    },
     onTheme: () => { const btn = document.getElementById('theme-toggle') as HTMLButtonElement; btn?.click(); },
     onTab: (n) => {
       const tab = tabFromNumber(n);
@@ -156,39 +181,20 @@ const heroEntries = [
       btn?.click();
     },
     onEscape: () => {
-      searchInput.value = '';
-      currentQuery = '';
-      applyFilters();
-      const modal = document.getElementById('keyboard-help-modal');
-      if (modal) modal.style.display = 'none';
-    },
-    onNext: () => {
-      const cards = Array.from(document.querySelectorAll<HTMLElement>('.member-card')).filter(c => c.style.display !== 'none' && c.offsetParent !== null);
-      if (!cards.length) return;
-      const currentIdx = cards.findIndex(c => c === document.activeElement || c.contains(document.activeElement));
-      const nextIdx = currentIdx < cards.length - 1 ? currentIdx + 1 : 0;
-      cards[nextIdx].setAttribute('tabindex', '-1');
-      cards[nextIdx].focus();
-      cards[nextIdx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      const liveRegion = document.getElementById('kbd-live-region');
-      if (liveRegion) {
-        const name = cards[nextIdx].querySelector('.card-name, .member-name, h3, h4')?.textContent ?? '';
-        liveRegion.textContent = `Focused: ${name}`;
+      if (searchInput && searchInput.value) {
+        searchInput.value = '';
+        currentQuery = '';
+        applyFilters();
       }
+      resetFocus();
     },
-    onPrev: () => {
-      const cards = Array.from(document.querySelectorAll<HTMLElement>('.member-card')).filter(c => c.style.display !== 'none' && c.offsetParent !== null);
-      if (!cards.length) return;
-      const currentIdx = cards.findIndex(c => c === document.activeElement || c.contains(document.activeElement));
-      const prevIdx = currentIdx > 0 ? currentIdx - 1 : cards.length - 1;
-      cards[prevIdx].setAttribute('tabindex', '-1');
-      cards[prevIdx].focus();
-      cards[prevIdx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      const liveRegion = document.getElementById('kbd-live-region');
-      if (liveRegion) {
-        const name = cards[prevIdx].querySelector('.card-name, .member-name, h3, h4')?.textContent ?? '';
-        liveRegion.textContent = `Focused: ${name}`;
-      }
+    onNext: () => { focusCard(focusedIdx + 1); },
+    onPrev: () => { focusCard(focusedIdx - 1); },
+    onOpenLink: () => {
+      const all = visibleCards();
+      const card = all[focusedIdx];
+      const link = card?.querySelector('a[href]') as HTMLAnchorElement | null;
+      if (link) { window.open(link.href, '_blank', 'noopener'); }
     },
   });
 

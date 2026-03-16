@@ -106,6 +106,8 @@ const base = import.meta.env.BASE_URL;
     .members-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
     .member-card { background: var(--color-bg-default); border: 1px solid var(--color-border-default); border-top: 3px solid var(--card-accent, var(--color-border-default)); border-radius: 6px; padding: 1rem; transition: box-shadow 0.15s; }
     .member-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+    .member-card.keyboard-focused,
+    .hero-card.keyboard-focused { outline: 2px solid var(--color-cncf-blue); outline-offset: 2px; }
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
     .tier-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.2rem 0.5rem; border-radius: 4px; }
     .card-logo { border-radius: 4px; }
