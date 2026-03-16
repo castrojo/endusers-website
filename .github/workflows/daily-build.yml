@@ -18,12 +18,13 @@ jobs:
       - uses: actions/setup-go@v5
         with: { go-version: '1.23' }
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
+        with: { node-version: '22' }
       - uses: actions/cache@v4
         with:
           path: |
             .sync-cache
             src/data/changelog.json
+            src/data/members.json
           key: sync-cache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: sync-cache-${{ runner.os }}-
       - name: Sync data
@@ -34,6 +35,7 @@ jobs:
           path: |
             .sync-cache
             src/data/changelog.json
+            src/data/members.json
           key: sync-cache-${{ runner.os }}-${{ github.run_id }}
       - run: npm ci
       - name: Build
