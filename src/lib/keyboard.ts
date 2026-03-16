@@ -5,6 +5,7 @@ interface Opts {
   onTab: (n: number) => void; onEscape: () => void;
   onNext: () => void; onPrev: () => void;
   onOpenLink: () => void;
+  onSitePrev?: () => void; onSiteNext?: () => void;
 }
 
 export function initKeyboard(opts: Opts): void {
@@ -55,6 +56,8 @@ export function initKeyboard(opts: Opts): void {
         (tabBtns[next] as HTMLElement).scrollIntoView({ inline: 'nearest', block: 'nearest' });
       }
       if (e.key === 'o' || e.key === 'Enter') { opts.onOpenLink(); }
+      if (e.key === '[') { e.preventDefault(); opts.onSitePrev?.(); }
+      if (e.key === ']') { e.preventDefault(); opts.onSiteNext?.(); }
     }
   });
 }

@@ -64,4 +64,18 @@ test.describe('visual layout verification', () => {
     const colCount = membersGrid!.cols.split(' ').length;
     expect(colCount).toBeGreaterThanOrEqual(2);
   });
+
+  test('site switcher pills do not have CNCF prefix', async ({ page }) => {
+    await page.goto('./');
+    const pills = await page.locator('.switcher-pill').allTextContents();
+    expect(pills).toContain('End Users');
+    expect(pills.every(p => !p.startsWith('CNCF'))).toBe(true);
+  });
+
+  test('active pill has blue background', async ({ page }) => {
+    await page.goto('./');
+    const activePill = page.locator('.switcher-pill.active');
+    const bg = await activePill.evaluate(el => getComputedStyle(el).backgroundColor);
+    expect(bg).toBe('rgb(0, 134, 255)');
+  });
 });

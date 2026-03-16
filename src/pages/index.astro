@@ -196,6 +196,8 @@ const heroEntries = [
       const link = card?.querySelector('a[href]') as HTMLAnchorElement | null;
       if (link) { window.open(link.href, '_blank', 'noopener'); }
     },
+    onSitePrev: () => { window.location.href = 'https://castrojo.github.io/projects-website/'; },
+    onSiteNext: () => { window.location.href = 'https://castrojo.github.io/people-website/'; },
   });
 
   function wireCardEvents(): void {
