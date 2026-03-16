@@ -129,3 +129,91 @@ git push
 ```
 
 Branch is `main`. Push directly (castrojo-owned, no fork workflow).
+
+---
+
+## Header Migration (PENDING — canonical design from projects-website)
+
+> **Status:** Not yet implemented. projects-website is the reference. Implement this section exactly.
+
+The canonical header was finalized on 2026-03-16 in `castrojo/projects-website`.
+All three sites must be pixel-perfect identical in header structure.
+See `~/src/skills/cncf-layout/SKILL.md` → "Required Header Structure" for the full spec.
+
+### What needs to change in endusers-website
+
+**Critical note:** endusers-website has ALL CSS inline in `src/layouts/EndusersLayout.astro`
+in one giant `<style>` block. Until CSS is extracted to `src/styles/layout.css`,
+make all changes to that inline block.
+
+#### HTML (`src/layouts/EndusersLayout.astro`)
+
+- [ ] **Logo**: Change both logo `width`/`height` attributes from `56` → `42`
+- [ ] **Remove slogan**: Delete `<p class="site-subtitle" id="rotating-slogan">` element
+- [ ] **Remove slogan JS**: Delete the `SLOGANS` array + `setInterval` block  
+- [ ] **Remove slogan CSS**: Delete `.site-subtitle` and `.site-subtitle.fade` rules
+- [ ] **Move nav-group outside header-left**: `nav-group` div must be a direct child of `header-inner`, NOT nested inside `header-left`
+- [ ] **Add clear button**: Add `<button id="search-clear" class="search-clear" aria-label="Clear search">✕</button>` inside `.search-wrapper`
+- [ ] **Add clear button JS**: Add the clear button event handler (see skill for exact code)
+
+#### CSS (inline `<style>` block in EndusersLayout.astro)
+
+```css
+/* Replace old values with these canonical values */
+.logo-title            { gap: 0.5rem; }
+.cncf-logo-wrapper img { height: 42px; width: auto; object-fit: contain; display: block; }
+.title-block           { height: 42px; display: flex; align-items: center; }
+.site-title            { font-size: 1.375rem; font-weight: 700; }
+.header-left           { flex-shrink: 0; }    /* REMOVE flex:1 */
+.nav-group             { flex: 1; flex-direction: row; align-items: center;
+                         justify-content: flex-start; gap: 0.75rem; padding-left: 3rem; }
+                         /* REMOVE: flex-direction: column, max-width: 600px */
+.search-input          { width: 360px; padding: 0.5rem 2rem 0.5rem 0.75rem; }
+                         /* was: width: 220px */
+.search-input:focus    { border-color: var(--color-cncf-blue);
+                         box-shadow: 0 0 0 2px var(--color-cncf-blue); }
+                         /* was: box-shadow with rgba (fuzzy glow) */
+.search-count          { right: 2rem; }   /* was: right: 0.5rem */
+.search-clear          { /* new — see cncf-layout skill for full rule */ }
+
+/* REMOVE mobile override: #search-input { width: 160px } */
+
+/* Mobile breakpoint — add this block */
+@media (max-width: 768px) {
+  .header-inner  { flex-wrap: wrap; gap: 0.75rem; }
+  .nav-group     { order: 3; flex: 1 1 100%; justify-content: flex-start; padding-left: 0; }
+  .header-actions { order: 2; margin-left: auto; }
+  .header-left   { order: 1; }
+  .search-input  { width: 100%; }
+  .nav-group .search-wrapper { flex: 1; }
+  .nav-group .site-switcher  { padding: 1px; }
+  .nav-group .switcher-pill  { padding: 0.2rem 0.55rem; font-size: 0.75rem; }
+}
+```
+
+#### CSS variables
+
+endusers-website CSS variables may be inline or missing. Ensure these exist:
+```css
+--color-accent-emphasis: #0969da;   /* light */
+--color-text-tertiary: #6e7781;     /* light */
+/* dark theme: */
+--color-accent-emphasis: #2f81f7;
+--color-text-tertiary: #8b949e;
+```
+
+### Future CSS extraction (separate task)
+
+After the header migration, extract the inline style block to:
+- `src/styles/variables.css`
+- `src/styles/layout.css`
+- `src/styles/cards.css`
+Mirroring the projects-website structure exactly.
+
+### Tests to add after migration
+
+Copy `tests/e2e/header.spec.ts` from `castrojo/projects-website` and update:
+- `"CNCF Projects"` → `"CNCF End Users"` (or site title)
+- `activeSite="projects"` → `activeSite="endusers"`
+- Section-nav tab count/labels to match endusers tabs
+- Base URL in playwright.config.ts
