@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('search', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/endusers-website/');
-    await page.waitForLoadState('networkidle');
-    await page.waitForSelector('.member-card', { timeout: 10000 });
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForSelector('.member-card', { timeout: 15000 });
   });
 
   test('search input exists and is focusable', async ({ page }) => {

@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: 'list',
   timeout: 30000,
   use: {
-    baseURL: 'http://localhost:4323/endusers-website/',
+    baseURL: 'http://localhost:4324/endusers-website/',
     trace: 'on-first-retry',
     headless: true,
   },
@@ -17,8 +17,8 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: {
-    command: 'npx astro build && npx astro preview --port 4323',
-    url: 'http://localhost:4323/endusers-website/',
+    command: 'npm run build && npx astro preview --port 4324',
+    url: 'http://localhost:4324/endusers-website/',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },

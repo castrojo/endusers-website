@@ -51,15 +51,22 @@ const heroEntries = [
         <div class="heroes-grid">
           {heroEntries.map(({ label, member }) => {
             const heroColor = HERO_TIER_COLORS[member.tier] ?? 'var(--color-cncf-blue)';
+            // compute RGB for shadow (simple parse for hex colors)
+            const hex = heroColor.replace('#','');
+            const r = parseInt(hex.substring(0,2), 16) || 0;
+            const g = parseInt(hex.substring(2,4), 16) || 134;
+            const b = parseInt(hex.substring(4,6), 16) || 255;
             return (
-              <div class="hero-card" style={`--card-accent: ${heroColor}`}>
-                {member.logoUrl && <img class="hero-logo" src={member.logoUrl} alt={`${member.name} logo`} width="48" height="48" loading="lazy" />}
-                <div class="hero-content">
-                  <div class="hero-label">{label}</div>
+              <div class="hero-card" style={`--card-accent: ${heroColor}; --hero-color: ${heroColor}; --hero-shadow-rgb: ${r},${g},${b}`}>
+                <div class="hero-gradient"></div>
+                <span class="hero-label">{label}</span>
+                <div class="hero-logo-wrap">
+                  {member.logoUrl && <img class="hero-logo" src={member.logoUrl} alt={`${member.name} logo`} loading="lazy" />}
+                </div>
+                <div class="hero-info">
                   <a class="hero-name" href={member.homepageUrl || '#'} target="_blank" rel="noopener">{member.name}</a>
-                  {member.description && <p class="hero-description">{member.description.slice(0, 80)}{member.description.length > 80 ? '...' : ''}</p>}
                   <div class="hero-meta">
-                    <span class="hero-tier">{member.tier}</span>
+                    <span>{member.tier}</span>
                     {member.country && <span>{member.countryFlag} {member.country}</span>}
                     {member.industries?.[0] && <span>{member.industries[0]}</span>}
                   </div>

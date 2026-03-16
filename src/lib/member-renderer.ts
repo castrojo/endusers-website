@@ -9,7 +9,7 @@ export interface SafeMember {
 }
 
 const TIER_COLORS: Record<string, string> = {
-  Platinum: '#B0B0B0', Gold: '#FFB300', Silver: '#C0C0C0',
+  Platinum: '#E5E4E2', Gold: '#FFB300', Silver: '#C0C0C0',
   'End User': '#0086FF', Academic: '#7B2FBE', Nonprofit: '#00A86B',
 };
 
@@ -67,12 +67,13 @@ export function renderCard(m: SafeMember): string {
     data-enduser="${m.isEndUser}"
     data-slug="${escapeHtml(m.slug)}"
   >
-    <div class="card-header">
-      <span class="tier-badge" style="background:${color};color:${badgeTextColor}">${escapeHtml(m.tier)}</span>
-      ${m.companyType ? `<span class="type-badge">${escapeHtml(m.companyType)}</span>` : ''}
-      ${m.logoUrl ? `<img class="card-logo" src="${escapeHtml(m.logoUrl)}" alt="${name} logo" width="40" height="40" loading="lazy" style="width:40px;height:40px;object-fit:contain" />` : ''}
-    </div>
+    <div class="card-accent-bar"></div>
     <div class="card-body">
+      <div class="card-header">
+        <span class="tier-badge" style="background:${color};color:${badgeTextColor}">${escapeHtml(m.tier)}</span>
+        ${m.companyType ? `<span class="type-badge">${escapeHtml(m.companyType)}</span>` : ''}
+        ${m.logoUrl ? `<img class="card-logo" src="${escapeHtml(m.logoUrl)}" alt="${name} logo" width="40" height="40" loading="lazy" style="width:40px;height:40px;object-fit:contain" />` : ''}
+      </div>
       <h3 class="card-name">${name}</h3>
       ${desc ? `<p class="card-description">${desc}</p>` : ''}
       ${meta.join('')}

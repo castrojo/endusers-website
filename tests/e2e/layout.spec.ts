@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('layout structure', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/endusers-website/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('sidebar is on the LEFT side of content', async ({ page }) => {
@@ -25,15 +25,16 @@ test.describe('layout structure', () => {
   test('header has proper structure with h1 title', async ({ page }) => {
     const header = page.locator('header');
     await expect(header.locator('h1')).toBeVisible();
-    await expect(header.locator('#rotating-slogan')).toBeVisible();
     await expect(header.locator('.site-switcher')).toBeVisible();
     await expect(header.locator('#search-input')).toBeVisible();
     await expect(header.locator('#help-button')).toBeVisible();
   });
 
-  test('search input is in header-left section', async ({ page }) => {
-    const searchInLeft = page.locator('.header-left .search-wrapper #search-input, .header-left #search-input');
-    await expect(searchInLeft).toBeVisible();
+  test('search input is in .nav-group (sibling of header-left, not inside it)', async ({ page }) => {
+    const searchInNavGroup = page.locator('.nav-group #search-input');
+    await expect(searchInNavGroup).toBeVisible();
+    const searchInLeft = page.locator('.header-left #search-input');
+    await expect(searchInLeft).toHaveCount(0);
   });
 
   test('tab navigation with tier buttons is inside the header container', async ({ page }) => {

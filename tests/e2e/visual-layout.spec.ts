@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('visual layout verification', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/endusers-website/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('page-layout uses CSS grid with sidebar-left 2-column layout', async ({ page }) => {

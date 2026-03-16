@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('theme', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/endusers-website/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('theme toggle button exists', async ({ page }) => {
@@ -22,7 +22,7 @@ test.describe('theme', () => {
     await page.click('#theme-toggle');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   });
 });

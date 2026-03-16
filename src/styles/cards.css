@@ -1,0 +1,266 @@
+/* ============================================================
+   cards.css — shared card design language
+   Based on people-website reference implementation.
+   All three sites should use the same card patterns.
+   ============================================================ */
+
+/* ── Hero card (square, accent gradient bg, logo centered) ── */
+
+.hero-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, outline-color 0.2s ease;
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+  cursor: pointer;
+  user-select: none;
+  /* Gradient background from tier accent color */
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--hero-color, var(--color-cncf-blue)) 20%, var(--color-bg-default)),
+    color-mix(in srgb, var(--hero-color, var(--color-cncf-blue)) 8%, var(--color-bg-default))
+  );
+}
+
+.hero-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 28px rgba(var(--hero-shadow-rgb, 0, 134, 255), 0.35);
+  outline-color: var(--hero-color, var(--color-cncf-blue));
+}
+
+.hero-card:active,
+.hero-card.pressing {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(var(--hero-shadow-rgb, 0, 134, 255), 0.25);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+/* Category label — top left */
+.hero-label {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.7rem;
+  z-index: 3;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--hero-label-text, #fff);
+  background: var(--hero-color, var(--color-cncf-blue));
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Org logo — centered in card */
+.hero-logo-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.8rem 1rem 3.5rem;
+  z-index: 1;
+}
+
+.hero-logo {
+  max-width: 78%;
+  max-height: 60%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));
+}
+
+/* Gradient overlay so bottom text stays legible */
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.62) 0%,
+    rgba(0, 0, 0, 0.18) 35%,
+    rgba(0, 0, 0, 0.0) 55%
+  );
+}
+
+/* Text at bottom */
+.hero-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.hero-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.6);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.hero-name:hover {
+  text-decoration: underline;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.75);
+  flex-wrap: wrap;
+}
+
+/* ── Heroes grid ─────────────────────────────────────────── */
+
+.heroes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .heroes-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .heroes-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Member card (letterbox, people-style shell) ─────────── */
+
+.member-card {
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  margin-bottom: 0.75rem;
+}
+
+.member-card:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--card-accent, var(--color-cncf-blue));
+}
+
+/* Top accent strip — replaces old border-top: 3px */
+.card-accent-bar {
+  height: 4px;
+  background: var(--card-accent, var(--color-cncf-blue));
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+/* ── Keyboard focus (all card types) ────────────────────── */
+
+.hero-card.keyboard-focused,
+.member-card.keyboard-focused {
+  outline: 2px solid var(--color-accent-emphasis);
+  outline-offset: 2px;
+}
+
+/* ── Badge ───────────────────────────────────────────────── */
+
+.tier-badge {
+  display: inline-flex;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.type-badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-default);
+  margin-left: 0.25rem;
+}
+
+/* ── Card content typography ─────────────────────────────── */
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.card-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.card-description {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-meta-row {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.card-category { font-style: italic; }
+.card-ticker { font-family: ui-monospace, monospace; }
+.card-region { font-style: italic; }
+
+/* ── Card links ──────────────────────────────────────────── */
+
+.card-links {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.card-link {
+  font-size: 0.78rem;
+  color: var(--color-cncf-blue);
+  text-decoration: none;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.card-link:hover {
+  background: var(--color-bg-secondary);
+}

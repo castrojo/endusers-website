@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('navigation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/endusers-website/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('page loads with member cards', async ({ page }) => {
