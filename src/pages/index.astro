@@ -1,0 +1,132 @@
+---
+import fs from 'node:fs';
+import EndusersLayout from '../layouts/EndusersLayout.astro';
+import { renderCard } from '../lib/member-renderer';
+import { selectHeroes } from '../lib/heroes';
+import type { SafeMember } from '../lib/member-renderer';
+
+let members: SafeMember[] = [];
+try {
+  const raw = fs.readFileSync('src/data/members.json', 'utf-8');
+  members = JSON.parse(raw) as SafeMember[];
+} catch {
+  // graceful degradation on fresh clone
+}
+
+const endUserCount = members.filter(m => m.isEndUser).length;
+const heroes = selectHeroes(members);
+
+const STATIC_COUNT = 30;
+const staticMembers = members.slice(0, STATIC_COUNT);
+const heroEntries = [
+  { key: 'endUser', label: 'End User Spotlight', member: heroes.endUser },
+  { key: 'platinum', label: 'Platinum Member', member: heroes.platinum },
+  { key: 'recentlyJoined', label: 'Recently Joined', member: heroes.recentlyJoined },
+  { key: 'community', label: 'Academic / Nonprofit', member: heroes.community },
+].filter(h => h.member !== null) as { key: string; label: string; member: SafeMember }[];
+---
+<EndusersLayout
+  title="CNCF End Users"
+  memberCount={members.length}
+  endUserCount={endUserCount}
+>
+  <div slot="heroes">
+    {heroEntries.length > 0 && (
+      <section class="heroes-section" aria-label="Daily highlights">
+        <div class="heroes-grid">
+          {heroEntries.map(({ label, member }) => (
+            <div class="hero-card" style={`--card-accent: var(--color-cncf-blue)`}>
+              {member.logoUrl && <img class="hero-logo" src={member.logoUrl} alt={`${member.name} logo`} width="36" height="36" loading="lazy" />}
+              <div>
+                <div class="hero-label">{label}</div>
+                <div class="hero-name">{member.name}</div>
+                {member.country && <div style="font-size:0.75rem;color:var(--color-text-muted)">{member.country} {member.countryFlag}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+
+  {staticMembers.map(m => <Fragment set:html={renderCard(m)} />)}
+</EndusersLayout>
+
+<script>
+  import { initSearch, searchMembers, getAllMembers } from '../lib/search';
+  import { renderCard } from '../lib/member-renderer';
+  import { initTabs, filterByTab } from '../lib/tabs';
+  import { initKeyboard, tabFromNumber } from '../lib/keyboard';
+  import type { TabId } from '../lib/tabs';
+
+  const base = import.meta.env.BASE_URL;
+  const grid = document.getElementById('members-grid')!;
+  const noResults = document.getElementById('no-results')!;
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  const searchCount = document.getElementById('search-count')!;
+  const statShowing = document.getElementById('stat-showing')!;
+
+  let allMembers: import('../lib/member-renderer').SafeMember[] = [];
+  let currentTab: TabId = 'everyone';
+  let currentQuery = '';
+
+  async function loadAllMembers() {
+    try {
+      const res = await fetch(`${base}/data/members.json`);
+      allMembers = await res.json();
+      initSearch(allMembers);
+      applyFilters();
+    } catch {
+      // use static members already rendered
+    }
+  }
+
+  function applyFilters() {
+    let filtered = filterByTab(allMembers, currentTab);
+    if (currentQuery.trim()) {
+      const results = searchMembers(currentQuery);
+      const slugSet = new Set(results.map(r => r.slug));
+      filtered = filtered.filter(m => slugSet.has(m.slug));
+    }
+    if (filtered.length === 0 && (currentQuery || currentTab !== 'everyone')) {
+      grid.style.display = 'none';
+      noResults.style.display = 'block';
+      searchCount.textContent = '';
+      statShowing.textContent = 'Showing 0 results';
+    } else {
+      noResults.style.display = 'none';
+      grid.style.display = '';
+      grid.innerHTML = filtered.map(renderCard).join('\n');
+      const label = `Showing ${filtered.length.toLocaleString()}`;
+      statShowing.textContent = label;
+      searchCount.textContent = currentQuery ? String(filtered.length) : '';
+    }
+  }
+
+  initTabs((tabId) => { currentTab = tabId; applyFilters(); });
+
+  searchInput?.addEventListener('input', () => {
+    currentQuery = searchInput.value;
+    applyFilters();
+  });
+
+  initKeyboard({
+    onSearch: () => searchInput?.focus(),
+    onHelp: () => { const modal = document.getElementById('keyboard-help-modal'); if (modal) modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; },
+    onTheme: () => { const btn = document.getElementById('theme-toggle') as HTMLButtonElement; btn?.click(); },
+    onTab: (n) => {
+      const tab = tabFromNumber(n);
+      const btn = document.querySelector(`.tab-button[data-tab="${tab}"]`) as HTMLButtonElement;
+      btn?.click();
+    },
+    onEscape: () => {
+      searchInput.value = '';
+      currentQuery = '';
+      applyFilters();
+      const modal = document.getElementById('keyboard-help-modal');
+      if (modal) modal.style.display = 'none';
+    },
+  });
+
+  loadAllMembers();
+</script>

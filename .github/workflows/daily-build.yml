@@ -1,0 +1,46 @@
+name: Daily Build
+on:
+  schedule: [{ cron: '0 7 * * *' }]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency: { group: pages, cancel-in-progress: false }
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: '${{ steps.deployment.outputs.page_url }}' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.23' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .sync-cache
+            src/data/changelog.json
+          key: sync-cache-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: sync-cache-${{ runner.os }}-
+      - name: Sync data
+        run: cd endusers-go && go build -o endusers cmd/endusers/main.go && cd .. && ./endusers-go/endusers
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            .sync-cache
+            src/data/changelog.json
+          key: sync-cache-${{ runner.os }}-${{ github.run_id }}
+      - run: npm ci
+      - name: Build
+        run: |
+          mkdir -p public/data
+          cp src/data/members.json public/data/members.json
+          cp src/data/changelog.json public/data/changelog.json
+          npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: dist/ }
+      - uses: actions/deploy-pages@v4
+        id: deployment
