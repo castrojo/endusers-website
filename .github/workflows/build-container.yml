@@ -1,0 +1,57 @@
+name: Build Container
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .sync-cache
+            src/data
+          key: sync-cache-${{ runner.os }}-latest
+          restore-keys: |
+            sync-cache-${{ runner.os }}-
+
+      - name: Sync data
+        run: cd endusers-go && go build -o endusers cmd/endusers/main.go && ./endusers
+
+      - name: Save cache
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            .sync-cache
+            src/data
+          key: sync-cache-${{ runner.os }}-latest
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          build-args: SKIP_GO_SYNC=true
+          tags: ghcr.io/castrojo/endusers-website:latest
