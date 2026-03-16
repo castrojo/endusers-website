@@ -25,7 +25,7 @@ test.describe('visual layout verification', () => {
   test('sidebar renders to the LEFT of main content', async ({ page }) => {
     const positions = await page.evaluate(() => {
       const sidebar = document.querySelector('.sidebar, aside');
-      const main = document.querySelector('.main-content, .content-area, main');
+      const main = document.querySelector('.main-content');
       if (!sidebar || !main) return null;
       return {
         sidebarX: sidebar.getBoundingClientRect().x,

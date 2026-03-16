@@ -8,7 +8,7 @@ test.describe('layout structure', () => {
 
   test('sidebar is on the LEFT side of content', async ({ page }) => {
     const sidebar = page.locator('aside.sidebar');
-    const content = page.locator('.main-content, .content-area, main');
+    const content = page.locator('.main-content');
     await expect(sidebar).toBeVisible();
     await expect(content).toBeVisible();
     const sidebarBox = await sidebar.boundingBox();

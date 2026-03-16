@@ -11,7 +11,7 @@ const CANONICAL = {
   sectionLinkFontSize: '14px', // 0.875rem
   sectionLinkPadding: '8px 16px', // 0.5rem 1rem
   searchInputWidth: '360px',
-  accentColor: 'rgb(9, 105, 218)', // #0969da light mode
+  accentColor: 'rgb(0, 134, 255)', // #0086ff cncf-blue (canonical per cncf-dev skill)
   stickyHeader: true,
 };
 
@@ -103,7 +103,7 @@ test.describe('header — desktop (1280×800)', () => {
     expect(pos).toBe('sticky');
   });
 
-  test('active tab uses accent color #0969da in light mode', async ({ page }) => {
+  test('active tab uses cncf-blue #0086ff in light mode', async ({ page }) => {
     await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
     const color = await page.evaluate(() => {
       const el = document.querySelector('.section-link.active');
