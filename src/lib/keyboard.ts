@@ -3,6 +3,7 @@ import type { TabId } from './tabs';
 interface Opts {
   onSearch: () => void; onHelp: () => void; onTheme: () => void;
   onTab: (n: number) => void; onEscape: () => void;
+  onNext: () => void; onPrev: () => void;
 }
 
 export function initKeyboard(opts: Opts): void {
@@ -14,6 +15,8 @@ export function initKeyboard(opts: Opts): void {
     else if (e.key === '?') opts.onHelp();
     else if (e.key === 't') opts.onTheme();
     else if (e.key >= '1' && e.key <= '6') opts.onTab(parseInt(e.key));
+    else if (e.key === 'j') { e.preventDefault(); opts.onNext(); }
+    else if (e.key === 'k') { e.preventDefault(); opts.onPrev(); }
   });
 }
 
