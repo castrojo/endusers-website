@@ -14,6 +14,8 @@ try {
 }
 
 const endUserCount = members.filter(m => m.isEndUser).length;
+const totalFunding = members.reduce((sum, m) => sum + (m.totalFunding ?? 0), 0);
+const industries = [...new Set(members.flatMap(m => m.industries ?? []).filter(Boolean))].sort();
 const heroes = selectHeroes(members);
 
 const STATIC_COUNT = 30;
@@ -29,6 +31,8 @@ const heroEntries = [
   title="CNCF End Users"
   memberCount={members.length}
   endUserCount={endUserCount}
+  totalFunding={totalFunding}
+  industries={industries}
 >
   <div slot="heroes">
     {heroEntries.length > 0 && (
@@ -69,6 +73,7 @@ const heroEntries = [
   let allMembers: import('../lib/member-renderer').SafeMember[] = [];
   let currentTab: TabId = 'everyone';
   let currentQuery = '';
+  let currentIndustry = '';
 
   async function loadAllMembers() {
     try {
@@ -87,6 +92,9 @@ const heroEntries = [
       const results = searchMembers(currentQuery);
       const slugSet = new Set(results.map(r => r.slug));
       filtered = filtered.filter(m => slugSet.has(m.slug));
+    }
+    if (currentIndustry) {
+      filtered = filtered.filter(m => (m.industries ?? []).includes(currentIndustry));
     }
     if (filtered.length === 0 && (currentQuery || currentTab !== 'everyone')) {
       grid.style.display = 'none';
@@ -112,7 +120,10 @@ const heroEntries = [
 
   initKeyboard({
     onSearch: () => searchInput?.focus(),
-    onHelp: () => { const modal = document.getElementById('keyboard-help-modal'); if (modal) modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; },
+    onHelp: () => {
+      document.getElementById('keyboard-help-modal')?.classList.toggle('visible');
+      document.getElementById('keyboard-help-backdrop')?.classList.toggle('visible');
+    },
     onTheme: () => { const btn = document.getElementById('theme-toggle') as HTMLButtonElement; btn?.click(); },
     onTab: (n) => {
       const tab = tabFromNumber(n);
@@ -129,4 +140,9 @@ const heroEntries = [
   });
 
   loadAllMembers();
+
+  document.getElementById('industry-filter')?.addEventListener('change', (e) => {
+    currentIndustry = (e.target as HTMLSelectElement).value;
+    applyFilters();
+  });
 </script>
