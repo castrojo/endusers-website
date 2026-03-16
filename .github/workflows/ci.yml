@@ -9,7 +9,7 @@ jobs:
         with: { go-version: '1.23' }
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
-      - run: cd endusers-go && go test ./...
+      - run: cd endusers-go && go test -race -cover ./...
       - run: cd endusers-go && go build -o endusers cmd/endusers/main.go && cd .. && ./endusers-go/endusers
       - run: npm ci
       - run: npx vitest run
