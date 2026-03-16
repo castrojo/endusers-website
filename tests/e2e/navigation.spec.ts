@@ -45,7 +45,7 @@ test.describe('navigation', () => {
   test('cards contain expected content: badge, name, description', async ({ page }) => {
     const firstCard = page.locator('.member-card').first();
     await expect(firstCard).toBeVisible();
-    await expect(firstCard.locator('[class*="badge"], [class*="tier"]')).toBeVisible();
+    await expect(firstCard.locator('[class*="badge"], [class*="tier"]').first()).toBeVisible();
     await expect(firstCard.locator('.card-name, .member-name, h3, h4')).toBeVisible();
   });
 

@@ -48,12 +48,14 @@ export function renderCard(m: SafeMember): string {
   if (m.twitterUrl) links.push(`<a class="card-link" href="${escapeHtml(m.twitterUrl)}" target="_blank" rel="noopener">Twitter</a>`);
 
   const meta: string[] = [];
-  if (location) meta.push(`<div class="card-meta-row">${escapeHtml(location)}</div>`);
+  if (location) meta.push(`<div class="card-meta-row"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;margin-right:3px;color:var(--color-text-muted)"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94ZM8 7.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/></svg>${escapeHtml(location)}</div>`);
+  if (m.region) meta.push(`<div class="card-meta-row card-region">${escapeHtml(m.region)}</div>`);
   if (m.industries?.length) meta.push(`<div class="card-meta-row card-category">${escapeHtml(m.industries.slice(0, 3).join(', '))}</div>`);
   const emp = formatEmployees(m.employeesMin, m.employeesMax);
   if (emp) meta.push(`<div class="card-meta-row">Employees: ${escapeHtml(emp)}</div>`);
   const funding = formatFunding(m.totalFunding);
   if (funding) meta.push(`<div class="card-meta-row">Funding: ${escapeHtml(funding)}</div>`);
+  if (m.ticker && m.stockExchange) meta.push(`<div class="card-meta-row card-ticker">${escapeHtml(m.stockExchange)}: ${escapeHtml(m.ticker)}</div>`);
   if (m.joinedAt) meta.push(`<div class="card-meta-row">Joined: ${escapeHtml(formatDate(m.joinedAt))}</div>`);
 
   const badgeTextColor = (m.tier === 'Platinum' || m.tier === 'Silver') ? '#333' : 'white';
@@ -67,6 +69,7 @@ export function renderCard(m: SafeMember): string {
   >
     <div class="card-header">
       <span class="tier-badge" style="background:${color};color:${badgeTextColor}">${escapeHtml(m.tier)}</span>
+      ${m.companyType ? `<span class="type-badge">${escapeHtml(m.companyType)}</span>` : ''}
       ${m.logoUrl ? `<img class="card-logo" src="${escapeHtml(m.logoUrl)}" alt="${name} logo" width="40" height="40" loading="lazy" style="width:40px;height:40px;object-fit:contain" />` : ''}
     </div>
     <div class="card-body">

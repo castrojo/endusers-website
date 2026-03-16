@@ -5,6 +5,15 @@ import { renderCard } from '../lib/member-renderer';
 import { selectHeroes } from '../lib/heroes';
 import type { SafeMember } from '../lib/member-renderer';
 
+const HERO_TIER_COLORS: Record<string, string> = {
+  'Platinum': '#E5E4E2',
+  'Gold': '#FFB300',
+  'Silver': '#C0C0C0',
+  'End User': '#0086FF',
+  'Academic': '#7B2FBE',
+  'Nonprofit': '#00A86B',
+};
+
 let members: SafeMember[] = [];
 try {
   const raw = fs.readFileSync('src/data/members.json', 'utf-8');
@@ -40,16 +49,24 @@ const heroEntries = [
     {heroEntries.length > 0 && (
       <section class="heroes-section" aria-label="Daily highlights">
         <div class="heroes-grid">
-          {heroEntries.map(({ label, member }) => (
-            <div class="hero-card" style={`--card-accent: var(--color-cncf-blue)`}>
-              {member.logoUrl && <img class="hero-logo" src={member.logoUrl} alt={`${member.name} logo`} width="36" height="36" loading="lazy" />}
-              <div>
-                <div class="hero-label">{label}</div>
-                <div class="hero-name">{member.name}</div>
-                {member.country && <div style="font-size:0.75rem;color:var(--color-text-muted)">{member.country} {member.countryFlag}</div>}
+          {heroEntries.map(({ label, member }) => {
+            const heroColor = HERO_TIER_COLORS[member.tier] ?? 'var(--color-cncf-blue)';
+            return (
+              <div class="hero-card" style={`--card-accent: ${heroColor}`}>
+                {member.logoUrl && <img class="hero-logo" src={member.logoUrl} alt={`${member.name} logo`} width="48" height="48" loading="lazy" />}
+                <div class="hero-content">
+                  <div class="hero-label">{label}</div>
+                  <a class="hero-name" href={member.homepageUrl || '#'} target="_blank" rel="noopener">{member.name}</a>
+                  {member.description && <p class="hero-description">{member.description.slice(0, 80)}{member.description.length > 80 ? '...' : ''}</p>}
+                  <div class="hero-meta">
+                    <span class="hero-tier">{member.tier}</span>
+                    {member.country && <span>{member.countryFlag} {member.country}</span>}
+                    {member.industries?.[0] && <span>{member.industries[0]}</span>}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     )}
