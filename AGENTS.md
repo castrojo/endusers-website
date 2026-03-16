@@ -111,12 +111,41 @@ When you need to look up CNCF member data as an AI agent, use the MCP server:
 The Go backend fetches full.json directly (richer fields than MCP). The MCP server
 is for AI agent queries only.
 
-## Testing Rules
+## Testing Rules — TDD Required (Non-Negotiable)
 
-- Run `npx playwright test` before and after any change
-- Visual layout tests in `tests/e2e/visual-layout.spec.ts` check computed CSS
-- Element-existence tests alone are insufficient
-- Run E2E tests sequentially when running all 3 sites (port conflicts)
+**Tests MUST be written before implementation. Always.**
+
+### Mandatory commit gate — ALL must pass before `git commit`
+
+- `just test` passes (unit tests: `npx vitest run`)
+- `just test-e2e` passes (E2E — requires `just serve` running, OR `npm run build && npx astro preview --port 4324` in another terminal)
+- Every new feature has at least one test verified **RED** before implementation
+
+**If you cannot run the tests, the task is BLOCKED — not done. Do not commit. Do not mark ✅.**
+
+### TDD workflow for any renderer or component change:
+
+1. **Baseline**: Run `just test` — confirm all tests green before touching anything
+2. **Write tests first**: For EVERY field the component renders, write a test that verifies the actual value — not just class names or element existence
+3. **Run `just test` → new tests MUST FAIL** (red is correct; proves tests are real)
+4. **Implement** the change
+5. **Run `just test` → ALL tests must pass** (green)
+
+### What counts as a "richness test" (required for every renderer):
+
+| ❌ BAD — structure only | ✅ GOOD — richness |
+|---|---|
+| `expect(html).toContain('tier-badge')` | `expect(html).toContain('#E5E4E2')` (actual Platinum color) |
+| `expect(html).toContain('End User')` | `expect(html).toContain('data-enduser="true"')` |
+| `expect(html).toContain('card-meta')` | `expect(html).toContain('href="https://example.com"')` |
+
+### Astro-specific rule
+
+**Logic in `.astro` files is NOT unit-testable.** Always extract business logic to `src/lib/*.ts` modules. Test those modules with Vitest. Never put tab filtering, search logic, or card rendering logic directly in `.astro` files.
+
+### Cross-site tests (cross-site-header.spec.ts)
+
+These require all 3 dev servers running. Use `CROSS_SITE_TEST=true npx playwright test` locally. Do NOT expect them to pass in standard CI — they skip automatically via beforeEach guard.
 
 ## Branch + Commit
 
