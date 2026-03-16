@@ -203,8 +203,18 @@ const heroEntries = [
       const link = card?.querySelector('a[href]') as HTMLAnchorElement | null;
       if (link) { window.open(link.href, '_blank', 'noopener'); }
     },
-    onSitePrev: () => { window.location.href = 'https://castrojo.github.io/projects-website/'; },
-    onSiteNext: () => { window.location.href = 'https://castrojo.github.io/people-website/'; },
+    onSitePrev: () => {
+      const isLocal = window.location.hostname === 'localhost';
+      window.location.href = isLocal
+        ? 'http://localhost:4322/projects-website/'
+        : 'https://castrojo.github.io/projects-website/';
+    },
+    onSiteNext: () => {
+      const isLocal = window.location.hostname === 'localhost';
+      window.location.href = isLocal
+        ? 'http://localhost:4323/people-website/'
+        : 'https://castrojo.github.io/people-website/';
+    },
   });
 
   function wireCardEvents(): void {
