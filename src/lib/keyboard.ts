@@ -1,7 +1,7 @@
 import type { TabId } from './tabs';
 
 interface Opts {
-  onSearch: () => void; onTheme: () => void;
+  onSearch: () => void; onHelp: () => void; onTheme: () => void;
   onTab: (n: number) => void; onEscape: () => void;
   onNext: () => void; onPrev: () => void;
   onOpenLink: () => void;
@@ -20,11 +20,7 @@ export function initKeyboard(opts: Opts): void {
       return;
     }
 
-    if (e.key === '?' && !inInput) {
-      document.getElementById('keyboard-help-modal')?.classList.add('visible');
-      document.getElementById('keyboard-help-backdrop')?.classList.add('visible');
-      return;
-    }
+    if (e.key === '?' && !inInput) { opts.onHelp(); return; }
 
     if (e.key === 'Escape') {
       document.getElementById('keyboard-help-modal')?.classList.remove('visible');

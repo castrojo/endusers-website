@@ -42,4 +42,46 @@ describe('renderCard', () => {
     const html = renderCard(funded);
     expect(html).toContain('$2.5B');
   });
+
+  it('renders platinum tier color #E5E4E2', () => {
+    const html = renderCard(base);
+    expect(html).toContain('#E5E4E2');
+  });
+
+  it('renders gold tier color #FFB300', () => {
+    const gold: SafeMember = { ...base, slug: 'gold-co', tier: 'Gold', isEndUser: false };
+    const html = renderCard(gold);
+    expect(html).toContain('#FFB300');
+  });
+
+  it('renders homepage link as href', () => {
+    const m: SafeMember = { ...base, slug: 'link-test', homepageUrl: 'https://google.com' };
+    const html = renderCard(m);
+    expect(html).toContain('href="https://google.com"');
+  });
+
+  it('sets data-enduser="true" for end users', () => {
+    const eu: SafeMember = { ...base, slug: 'eu-attr', tier: 'End User', isEndUser: true };
+    const html = renderCard(eu);
+    expect(html).toContain('data-enduser="true"');
+  });
+
+  it('renders country flag emoji in location', () => {
+    const m: SafeMember = { ...base, slug: 'flag-test', city: 'Toronto', country: 'Canada', countryFlag: '🇨🇦' };
+    const html = renderCard(m);
+    expect(html).toContain('🇨🇦');
+  });
+
+  it('formats employee range with en-dash', () => {
+    const m: SafeMember = { ...base, slug: 'emp-test', employeesMin: 1000, employeesMax: 5000 };
+    const html = renderCard(m);
+    expect(html).toContain('1,000');
+    expect(html).toContain('5,000');
+  });
+
+  it('renders stock exchange and ticker', () => {
+    const m: SafeMember = { ...base, slug: 'ticker-test', ticker: 'GOOG', stockExchange: 'NASDAQ' };
+    const html = renderCard(m);
+    expect(html).toContain('NASDAQ: GOOG');
+  });
 });

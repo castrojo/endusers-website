@@ -181,6 +181,10 @@ const heroEntries = [
 
   initKeyboard({
     onSearch: () => searchInput?.focus(),
+    onHelp: () => {
+      document.getElementById('keyboard-help-modal')?.classList.add('visible');
+      document.getElementById('keyboard-help-backdrop')?.classList.add('visible');
+    },
     onTheme: () => { const btn = document.getElementById('theme-toggle') as HTMLButtonElement; btn?.click(); },
     onTab: (n) => {
       const tab = tabFromNumber(n);
