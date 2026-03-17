@@ -107,15 +107,17 @@ const base = import.meta.env.BASE_URL;
   <main class="container">
     <div class="page-layout">
     <aside class="sidebar">
-      <div class="stats-box">
-        <h2 class="sidebar-heading">Members</h2>
-        <div class="stat-row"><span class="stat-label">Total members</span><span class="stat-value" id="stat-total">{memberCount}</span></div>
-        <div class="stat-row"><span class="stat-label">End users</span><span class="stat-value" id="stat-endusers">{endUserCount}</span></div>
-        <div class="stat-row"><span class="stat-label">Showing</span><span class="stat-value" id="stat-showing"></span></div>
-        {totalFunding > 0 && (
-          <div class="stat-row"><span class="stat-label">Total funding</span><span class="stat-value">${Math.round(totalFunding / 1e9)}B+</span></div>
-        )}
-      </div>
+      <InfoBox
+        title="About CNCF Members"
+        description="Organizations that support the cloud native ecosystem through CNCF membership."
+        links={[
+          { text: 'CNCF Landscape', url: 'https://landscape.cncf.io', external: true },
+          { text: 'Become a Member', url: 'https://www.cncf.io/about/join/', external: true },
+          { text: 'Members Feed (RSS)', url: `${base}/feed.xml`, rss: true },
+          { text: 'Report an issue', url: 'https://github.com/castrojo/endusers-website/issues', external: true },
+        ]}
+      />
+      {banners.length > 0 && <KubeConBanner banners={banners} />}
       {industries.length > 0 && (
         <div class="filter-box">
           <h2 class="sidebar-heading">Filter by Industry</h2>
@@ -132,16 +134,15 @@ const base = import.meta.env.BASE_URL;
           {countries.map(c => <option value={c}>{c}</option>)}
         </select>
       </div>
-      <InfoBox
-        title="About CNCF Members"
-        description="Organizations that support the cloud native ecosystem through CNCF membership."
-        links={[
-          { text: 'CNCF Landscape', url: 'https://landscape.cncf.io', external: true },
-          { text: 'Become a Member', url: 'https://www.cncf.io/about/join/', external: true },
-          { text: 'Members Feed (RSS)', url: `${base}/feed.xml`, rss: true },
-        ]}
-      />
-      {banners.length > 0 && <KubeConBanner banners={banners} />}
+      <div class="stats-box">
+        <h2 class="sidebar-heading">Members</h2>
+        <div class="stat-row"><span class="stat-label">Total members</span><span class="stat-value" id="stat-total">{memberCount}</span></div>
+        <div class="stat-row"><span class="stat-label">End users</span><span class="stat-value" id="stat-endusers">{endUserCount}</span></div>
+        <div class="stat-row"><span class="stat-label">Showing</span><span class="stat-value" id="stat-showing"></span></div>
+        {totalFunding > 0 && (
+          <div class="stat-row"><span class="stat-label">Total funding</span><span class="stat-value">${Math.round(totalFunding / 1e9)}B+</span></div>
+        )}
+      </div>
     </aside>
     <div class="main-content">
       <slot name="heroes" />
