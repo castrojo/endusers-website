@@ -2,14 +2,14 @@
 import fs from 'node:fs';
 import EndusersLayout from '../layouts/EndusersLayout.astro';
 import { renderCard } from '../lib/member-renderer';
-import { selectHeroes } from '../lib/heroes';
+import { selectHeroSets } from '../lib/heroes';
 import type { SafeMember } from '../lib/member-renderer';
 
 const HERO_TIER_COLORS: Record<string, string> = {
   'Platinum': '#E5E4E2',
   'Gold': '#FFB300',
   'Silver': '#C0C0C0',
-  'End User': '#0086FF',
+  'End User Supporter': '#0086FF',
   'Academic': '#7B2FBE',
   'Nonprofit': '#00A86B',
 };
@@ -22,22 +22,35 @@ try {
   // graceful degradation on fresh clone
 }
 
+interface StaffPerson {
+  handle?: string;
+  name: string;
+  imageUrl?: string;
+  profileUrl?: string;
+}
+interface StaffSupport {
+  maintainers?: StaffPerson[];
+  [key: string]: StaffPerson[] | undefined;
+}
+let staffSupport: StaffSupport = {};
+try {
+  const raw = fs.readFileSync('src/data/staff-support.json', 'utf-8');
+  staffSupport = JSON.parse(raw) as StaffSupport;
+} catch {
+  // graceful degradation
+}
+const staffList: StaffPerson[] = staffSupport.maintainers ?? [];
+
 const totalFunding = members.reduce((sum, m) => sum + (m.totalFunding ?? 0), 0);
 const platinumCount = members.filter(m => m.tier === 'Platinum').length;
 const goldCount = members.filter(m => m.tier === 'Gold').length;
 const silverCount = members.filter(m => m.tier === 'Silver').length;
 const industries = [...new Set(members.flatMap(m => m.industries ?? []).filter(Boolean))].sort();
 const countries = [...new Set(members.map(m => m.country).filter(Boolean))].sort() as string[];
-const heroes = selectHeroes(members);
+const heroSets = selectHeroSets(members);
 
 const STATIC_COUNT = 30;
 const staticMembers = members.slice(0, STATIC_COUNT);
-const heroEntries = [
-  { key: 'endUser', label: 'End User Spotlight', member: heroes.endUser },
-  { key: 'platinum', label: 'Platinum Member', member: heroes.platinum },
-  { key: 'recentlyJoined', label: 'Recently Joined', member: heroes.recentlyJoined },
-  { key: 'community', label: 'Academic / Nonprofit', member: heroes.community },
-].filter(h => h.member !== null) as { key: string; label: string; member: SafeMember }[];
 ---
 <EndusersLayout
   title="CNCF End Users"
@@ -50,27 +63,20 @@ const heroEntries = [
   countries={countries}
 >
   <div slot="heroes">
-    {heroEntries.length > 0 && (
-      <section class="heroes-section" aria-label="Daily highlights">
-        <div class="heroes-grid">
-          {heroEntries.map(({ label, member }) => {
+    <section class="heroes-section" aria-label="Daily highlights">
+      {(Object.entries(heroSets) as [string, SafeMember[]][]).map(([tabKey, heroes]) => (
+        <div class="heroes-grid" data-heroes-tab={tabKey} style={tabKey !== 'everyone' ? 'display:none' : ''}>
+          {heroes.map(member => {
             const heroColor = HERO_TIER_COLORS[member.tier] ?? 'var(--color-cncf-blue)';
-            // compute RGB for shadow (simple parse for hex colors)
-            const hex = heroColor.replace('#','');
-            const r = parseInt(hex.substring(0,2), 16) || 0;
-            const g = parseInt(hex.substring(2,4), 16) || 134;
-            const b = parseInt(hex.substring(4,6), 16) || 255;
             return (
-              <div class="hero-card" style={`--card-accent: ${heroColor}; --hero-color: ${heroColor}; --hero-shadow-rgb: ${r},${g},${b}`}>
-                <div class="hero-gradient"></div>
-                <span class="hero-label">{label}</span>
+              <div class="hero-card" style={`--hero-color: ${heroColor}`}>
+                <span class="hero-label">{member.tier}</span>
                 <div class="hero-logo-wrap">
                   {member.logoUrl && <img class="hero-logo" src={member.logoUrl} alt={`${member.name} logo`} loading="lazy" />}
                 </div>
                 <div class="hero-info">
                   <a class="hero-name" href={member.homepageUrl || '#'} target="_blank" rel="noopener">{member.name}</a>
                   <div class="hero-meta">
-                    <span>{member.tier}</span>
                     {member.country && <span>{member.countryFlag} {member.country}</span>}
                     {member.industries?.[0] && <span>{member.industries[0]}</span>}
                   </div>
@@ -78,6 +84,28 @@ const heroEntries = [
               </div>
             );
           })}
+        </div>
+      ))}
+    </section>
+
+    {staffList.length > 0 && (
+      <section class="staff-support-section">
+        <h2 class="staff-support-heading">CNCF Staff providing Support</h2>
+        <div class="staff-support-list">
+          {staffList.map(m => (
+            <a href={m.handle ? `https://github.com/${m.handle}` : (m.profileUrl ?? '#')} target="_blank" rel="noopener noreferrer" class="staff-support-card">
+              <img
+                src={m.handle ? `https://avatars.githubusercontent.com/${m.handle}` : (m.imageUrl ?? '')}
+                alt={m.name}
+                class="staff-support-avatar"
+                loading="lazy"
+              />
+              <div class="staff-support-info">
+                <span class="staff-support-name">{m.name}</span>
+                {m.handle && <span class="staff-support-handle">@{m.handle}</span>}
+              </div>
+            </a>
+          ))}
         </div>
       </section>
     )}
@@ -147,7 +175,18 @@ const heroEntries = [
     }
   }
 
-  initTabs((tabId) => { currentTab = tabId; applyFilters(); });
+  function showHeroesForTab(tab: string) {
+    const heroesSection = document.querySelector<HTMLElement>('.heroes-section');
+    const staffSection = document.querySelector<HTMLElement>('.staff-support-section');
+    if (heroesSection) heroesSection.style.display = '';
+    if (staffSection) staffSection.style.display = '';
+    const heroKey = ['platinum', 'gold', 'silver', 'academic'].includes(tab) ? tab : 'everyone';
+    document.querySelectorAll<HTMLElement>('.heroes-grid[data-heroes-tab]').forEach(grid => {
+      grid.style.display = grid.dataset.heroesTab === heroKey ? 'grid' : 'none';
+    });
+  }
+
+  initTabs((tabId) => { currentTab = tabId; showHeroesForTab(tabId); applyFilters(); });
 
   searchInput?.addEventListener('input', () => {
     currentQuery = searchInput.value;

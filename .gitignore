@@ -24,6 +24,7 @@ pnpm-debug.log*
 .idea/
 
 src/data/
+!src/data/staff-support.json
 public/data/
 .sync-cache/
 endusers-go/endusers

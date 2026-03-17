@@ -264,3 +264,66 @@ a.hero-name:hover {
 .card-link:hover {
   background: var(--color-bg-secondary);
 }
+
+/* ── Staff support section ───────────────────────────────── */
+
+.staff-support-section {
+  margin-bottom: 1.5rem;
+}
+
+.staff-support-heading {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.75rem 0;
+}
+
+.staff-support-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.staff-support-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.staff-support-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-cncf-blue);
+}
+
+.staff-support-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.staff-support-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.staff-support-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.staff-support-handle {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
