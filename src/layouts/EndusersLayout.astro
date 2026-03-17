@@ -13,12 +13,14 @@ interface Props {
   title: string;
   description?: string;
   memberCount?: number;
-  endUserCount?: number;
   totalFunding?: number;
   industries?: string[];
   countries?: string[];
+  platinumCount?: number;
+  goldCount?: number;
+  silverCount?: number;
 }
-const { title, description = 'CNCF End Users and member organizations', memberCount = 0, endUserCount = 0, totalFunding = 0, industries = [], countries = [] } = Astro.props;
+const { title, description = 'CNCF End Users and member organizations', memberCount = 0, totalFunding = 0, industries = [], countries = [], platinumCount = 0, goldCount = 0, silverCount = 0 } = Astro.props;
 const banners = await getActiveBanners();
 const base = import.meta.env.BASE_URL;
 ---
@@ -95,7 +97,6 @@ const base = import.meta.env.BASE_URL;
       </div>
       <nav class="section-nav" aria-label="Filter by tier">
         <button class="section-link active" data-tab="everyone">Everyone</button>
-        <button class="section-link" data-tab="end-users">End Users</button>
         <button class="section-link" data-tab="platinum">Platinum</button>
         <button class="section-link" data-tab="gold">Gold</button>
         <button class="section-link" data-tab="silver">Silver</button>
@@ -137,7 +138,9 @@ const base = import.meta.env.BASE_URL;
       <div class="stats-box">
         <h2 class="sidebar-heading">Members</h2>
         <div class="stat-row"><span class="stat-label">Total members</span><span class="stat-value" id="stat-total">{memberCount}</span></div>
-        <div class="stat-row"><span class="stat-label">End users</span><span class="stat-value" id="stat-endusers">{endUserCount}</span></div>
+        <div class="stat-row"><span class="stat-label">Platinum</span><span class="stat-value">{platinumCount}</span></div>
+        <div class="stat-row"><span class="stat-label">Gold</span><span class="stat-value">{goldCount}</span></div>
+        <div class="stat-row"><span class="stat-label">Silver</span><span class="stat-value">{silverCount}</span></div>
         <div class="stat-row"><span class="stat-label">Showing</span><span class="stat-value" id="stat-showing"></span></div>
         {totalFunding > 0 && (
           <div class="stat-row"><span class="stat-label">Total funding</span><span class="stat-value">${Math.round(totalFunding / 1e9)}B+</span></div>

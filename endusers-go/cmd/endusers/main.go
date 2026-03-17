@@ -43,14 +43,10 @@ func main() {
 	_ = state.SaveState(state.State{ETag: result.ETag})
 
 	tiers := map[string]int{}
-	endUsers := 0
 	for _, m := range result.Members {
 		tiers[m.Tier]++
-		if m.IsEndUser {
-			endUsers++
-		}
 	}
-	fmt.Printf("Platinum:%d Gold:%d Silver:%d EndUser:%d Academic:%d Nonprofit:%d (enduser flag: %d)\n",
-		tiers["Platinum"], tiers["Gold"], tiers["Silver"], tiers["End User"], tiers["Academic"], tiers["Nonprofit"], endUsers)
+	fmt.Printf("Total end users: %d  (Platinum:%d Gold:%d Silver:%d EndUserSupporter:%d Academic:%d Nonprofit:%d)\n",
+		len(result.Members), tiers["Platinum"], tiers["Gold"], tiers["Silver"], tiers["End User"], tiers["Academic"], tiers["Nonprofit"])
 	_, _ = fmt.Fprintf(os.Stderr, "endusers-website: wrote %d members, %d events\n", len(result.Members), len(events))
 }

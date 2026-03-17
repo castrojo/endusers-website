@@ -1,4 +1,4 @@
-export type TabId = 'everyone' | 'end-users' | 'platinum' | 'gold' | 'silver' | 'academic';
+export type TabId = 'everyone' | 'platinum' | 'gold' | 'silver' | 'academic';
 
 export function initTabs(onTabChange: (tabId: TabId) => void): void {
   const saved = (localStorage.getItem('endusers-active-tab') as TabId) ?? 'everyone';
@@ -21,7 +21,6 @@ export function activateTab(tabId: TabId, onTabChange: (tabId: TabId) => void): 
 export function filterByTab(members: import('./member-renderer').SafeMember[], tabId: TabId): import('./member-renderer').SafeMember[] {
   switch (tabId) {
     case 'everyone': return members;
-    case 'end-users': return members.filter(m => m.isEndUser);
     case 'platinum': return members.filter(m => m.tier === 'Platinum');
     case 'gold': return members.filter(m => m.tier === 'Gold');
     case 'silver': return members.filter(m => m.tier === 'Silver');

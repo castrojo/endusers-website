@@ -57,8 +57,8 @@ test.describe('keyboard shortcuts', () => {
     await expect(page.locator('#search-input')).toHaveValue('');
   });
 
-  test('number keys 1-6 switch tabs', async ({ page }) => {
-    const tabs = ['everyone', 'end-users', 'platinum', 'gold', 'silver', 'academic'];
+  test('number keys 1-5 switch tabs', async ({ page }) => {
+    const tabs = ['everyone', 'platinum', 'gold', 'silver', 'academic'];
     for (let i = 0; i < tabs.length; i++) {
       await page.keyboard.press(String(i + 1));
       await page.waitForTimeout(200);
@@ -92,7 +92,7 @@ test.describe('keyboard shortcuts', () => {
   test('keyboard-focused resets on tab click', async ({ page }) => {
     await page.keyboard.press('j');
     await expect(page.locator('.keyboard-focused')).toHaveCount(1);
-    await page.locator('.section-link[data-tab="end-users"]').click();
+    await page.locator('.section-link[data-tab="platinum"]').click();
     await expect(page.locator('.keyboard-focused')).toHaveCount(0);
   });
 
@@ -126,7 +126,7 @@ test.describe('keyboard shortcuts', () => {
     await expect(page.locator('.section-link.active')).toHaveAttribute('data-tab', 'everyone');
     await page.keyboard.press('Tab');
     await page.waitForTimeout(200);
-    await expect(page.locator('.section-link.active')).toHaveAttribute('data-tab', 'end-users');
+    await expect(page.locator('.section-link.active')).toHaveAttribute('data-tab', 'platinum');
   });
 
   test('Shift+Tab cycles to previous tab', async ({ page }) => {

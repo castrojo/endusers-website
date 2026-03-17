@@ -44,9 +44,17 @@ test.describe('layout structure', () => {
     await expect(tabsInHeader.first()).toBeVisible();
   });
 
-  test('sidebar has stats box as first item', async ({ page }) => {
+  test('sidebar items are in canonical order: InfoBox → filters → stats-box', async ({ page }) => {
+    // Use getBoundingClientRect — toBeVisible() is forbidden for order assertions
+    // (it checks existence/CSS visibility only, has no concept of DOM position)
+    const infoBox = page.locator('aside.sidebar details, aside.sidebar .info-box').first();
     const statsBox = page.locator('aside.sidebar .stats-box');
-    await expect(statsBox).toBeVisible();
+    const infoRect = await infoBox.boundingBox();
+    const statsRect = await statsBox.boundingBox();
+    expect(infoRect).not.toBeNull();
+    expect(statsRect).not.toBeNull();
+    // InfoBox must appear above (lower y value than) stats-box
+    expect(infoRect!.y).toBeLessThan(statsRect!.y);
   });
 
   test('search count span exists', async ({ page }) => {

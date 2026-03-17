@@ -136,14 +136,15 @@ test.describe('header — desktop (1280×800)', () => {
     expect(activePill?.trim()).toBe('End Users');
   });
 
-  test('6 tabs: Everyone, End Users, Platinum, Gold, Silver, Academic & Nonprofit', async ({ page }) => {
+  test('5 tabs: Everyone, Platinum, Gold, Silver, Academic & Nonprofit', async ({ page }) => {
     const tabs = await page.locator('.section-nav .section-link').allTextContents();
     const trimmed = tabs.map(t => t.trim());
     expect(trimmed).toContain('Everyone');
-    expect(trimmed).toContain('End Users');
+    expect(trimmed).not.toContain('End Users');
     expect(trimmed).toContain('Platinum');
     expect(trimmed).toContain('Gold');
     expect(trimmed).toContain('Silver');
+    expect(tabs.length).toBe(5);
   });
 });
 

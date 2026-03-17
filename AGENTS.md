@@ -9,8 +9,11 @@
 ## What This Repo Is
 
 CNCF End Users discovery site — third pillar of the Indie Cloud Native trilogy.
-Visualizes 721 CNCF member organizations from `landscape.cncf.io/data/full.json`
-with Crunchbase enrichment (703/721 have company data). No API tokens needed.
+Visualizes **~154 confirmed end-user organizations** (`isEndUser == true` in landscape data)
+from `landscape.cncf.io/data/full.json` with Crunchbase enrichment. No API tokens needed.
+
+**Important:** The site shows 154 orgs, NOT all 721 CNCF members. The Go backend filters
+to `CNCF Members` category AND `item.EndUser == true`. Do not revert this filter.
 
 - **Repo**: `castrojo/endusers-website` (branch: `main`)
 - **Live**: `https://castrojo.github.io/endusers-website/`
@@ -41,7 +44,7 @@ Key files:
 - `src/lib/heroes.ts` — djb2 hero rotation, selectHeroSets()
 - `src/pages/index.astro` — thin shell + hero grid + staff row + card container
 - `src/data/staff-support.json` — committed (not gitignored)
-- `src/styles/` — variables.css (cards.css missing — gap)
+- `src/styles/` — variables.css, layout.css, cards.css
 
 ## Verified Feature Inventory (as of 2026-03-16)
 
@@ -49,7 +52,7 @@ All features verified against source code.
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| 6 tabs (everyone/end-users/platinum/gold/silver/academic) | ✅ Done | `src/lib/tabs.ts` |
+| 5 tabs (everyone/platinum/gold/silver/academic) | ✅ Done | `src/lib/tabs.ts` |
 | Industry filter in sidebar | ✅ Done | `EndusersLayout.astro`, JS filter in `index.astro` |
 | Country/region filter in sidebar | ✅ Done | dropdown by country name |
 | Member card: totalFunding display | ✅ Done | `member-renderer.ts` formatFunding() |
@@ -62,39 +65,40 @@ All features verified against source code.
 | `kbd-live-region` aria-live region | ✅ Done | `EndusersLayout.astro` |
 | SiteSwitcher | ✅ Done | `SiteSwitcher.astro` |
 | Site nav order: `[`=Projects, `]`=People | ✅ Done | `index.astro` lines 199-200 |
-| Stats box (total members, end users, showing count, total funding) | ✅ Done | `EndusersLayout.astro` |
+| Stats box (total members, tier breakdown, showing count, total funding) | ✅ Done | `EndusersLayout.astro` |
 | Tier badge colors (Gold, Silver, End User, Academic, Nonprofit) | ✅ Done | `member-renderer.ts` |
 | MiniSearch search | ✅ Done | `src/lib/search.ts` |
 | RSS feed | ✅ Done | `src/pages/feed.xml.ts` |
 
 ## Confirmed Bugs — Fix These
 
-- [ ] **Platinum color wrong** — `member-renderer.ts` line 12: `Platinum: '#B0B0B0'` must be `'#E5E4E2'` (spec). One-line fix.
+(None currently known. Platinum color `#E5E4E2` is correct in member-renderer.ts.)
 
 ## Missing Features — Implement These
 
-- [ ] **Hero grid is 4 heroes total, not 2×4 per tab** — Current: `selectHeroes()` returns one hero per tier (endUser/platinum/recentlyJoined/community) = 4 total. Spec: 8 heroes per tab, tab-scoped (everyone/end-users/platinum/gold/silver/academic). Must rewrite `src/lib/heroes.ts` to use `heroSlots()` pattern from projects-website, add `selectHeroSets()`, and update `index.astro` to render tab-scoped grids with `data-heroes-tab` attribute. Also need `showHeroesForTab()` logic.
+- [ ] **Hero grid is 4 heroes total, not 2×4 per tab** — Current: `selectHeroes()` returns one hero per tier (endUser/platinum/recentlyJoined/community) = 4 total. Spec: 8 heroes per tab, tab-scoped (everyone/platinum/gold/silver/academic). Must rewrite `src/lib/heroes.ts` to use `heroSlots()` pattern from projects-website, add `selectHeroSets()`, and update `index.astro` to render tab-scoped grids with `data-heroes-tab` attribute. Also need `showHeroesForTab()` logic.
 
 - [ ] **Staff support section missing entirely** — No `src/data/staff-support.json`, no section in `index.astro`. Add: create JSON file (copy structure from projects-website `maintainers` key), add `<section class="staff-support-section">` to `index.astro` after hero grid, add CSS. Must be committed (add `!src/data/staff-support.json` to .gitignore exception).
 
-- [ ] **No cards.css / layout.css** — All styles are inlined in `EndusersLayout.astro` as `<style is:global>`. Extract to `src/styles/cards.css` and `src/styles/layout.css`, import via `@import` in the layout. Matches projects-website architecture.
-
 ## Architectural Notes
 
-- `src/styles/` only has `variables.css` — layout and card CSS are inline in `EndusersLayout.astro`
+- `src/styles/` has `variables.css`, `layout.css`, `cards.css` — all imported in `EndusersLayout.astro` frontmatter
+- The `<style is:global>` block in `EndusersLayout.astro` covers only endusers-specific overrides
 - No `src/data/staff-support.json` (must be added and committed, not gitignored)
 - Heroes use single-hero-per-tier pattern, NOT per-tab 8-card pools
 
 ## Tab Structure
 
-| Tab | Content |
-|-----|---------|
-| Everyone | All 721 CNCF members |
-| End Users | isEndUser=true (~154 orgs) |
-| Platinum | Platinum tier (~14) |
-| Gold | Gold tier (~17) |
-| Silver | Silver tier (~583) |
-| Academic & Nonprofit | Academic (3) + Nonprofit (21) |
+| Tab | data-tab | Content |
+|-----|----------|---------|
+| Everyone | `everyone` | All ~154 end-user members |
+| Platinum | `platinum` | Platinum tier within the 154 |
+| Gold | `gold` | Gold tier within the 154 |
+| Silver | `silver` | Silver tier within the 154 |
+| Academic & Nonprofit | `academic` | Academic + Nonprofit within the 154 |
+
+The "End Users" tab was removed — when the backend only emits `isEndUser==true` members,
+that tab is identical to "Everyone" and is redundant.
 
 ## Skills
 

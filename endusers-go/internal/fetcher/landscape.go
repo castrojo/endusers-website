@@ -74,6 +74,9 @@ func filterAndConvert(dataset models.FullDataset) []models.SafeMember {
 		if item.Category != "CNCF Members" {
 			continue
 		}
+		if !item.EndUser {
+			continue
+		}
 		m := toSafeMember(item, dataset.CrunchbaseData)
 		members = append(members, m)
 	}

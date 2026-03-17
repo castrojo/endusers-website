@@ -13,10 +13,12 @@ test.describe('navigation', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('6 tabs exist: Everyone, End Users, Platinum, Gold, Silver, Academic & Nonprofit', async ({ page }) => {
-    for (const tab of ['everyone', 'end-users', 'platinum', 'gold', 'silver', 'academic']) {
+  test('5 tabs exist: Everyone, Platinum, Gold, Silver, Academic & Nonprofit', async ({ page }) => {
+    for (const tab of ['everyone', 'platinum', 'gold', 'silver', 'academic']) {
       await expect(page.locator(`[data-tab="${tab}"]`)).toBeVisible();
     }
+    // end-users tab must not exist (removed — backend now only emits isEndUser==true members)
+    await expect(page.locator('[data-tab="end-users"]')).toHaveCount(0);
   });
 
   test('clicking a tab filters cards', async ({ page }) => {

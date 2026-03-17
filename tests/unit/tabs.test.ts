@@ -13,7 +13,6 @@ const members = [
 
 describe('filterByTab', () => {
   it('everyone returns all', () => expect(filterByTab(members, 'everyone')).toHaveLength(5));
-  it('endusers returns end users', () => expect(filterByTab(members, 'end-users').every(m => m.isEndUser)).toBe(true));
   it('platinum returns platinum', () => expect(filterByTab(members, 'platinum').every(m => m.tier === 'Platinum')).toBe(true));
   it('community returns academic and nonprofit', () => {
     const result = filterByTab(members, 'academic');

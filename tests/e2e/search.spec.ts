@@ -16,7 +16,7 @@ test.describe('search', () => {
 
   test('typing a query filters cards', async ({ page }) => {
     const cardsBefore = await page.locator('.member-card').count();
-    await page.fill('#search-input', 'google');
+    await page.fill('#search-input', 'uber');
     await page.waitForTimeout(500);
     const cardsAfter = await page.locator('.member-card:visible').count();
     expect(cardsAfter).toBeLessThan(cardsBefore);

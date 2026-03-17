@@ -22,8 +22,10 @@ try {
   // graceful degradation on fresh clone
 }
 
-const endUserCount = members.filter(m => m.isEndUser).length;
 const totalFunding = members.reduce((sum, m) => sum + (m.totalFunding ?? 0), 0);
+const platinumCount = members.filter(m => m.tier === 'Platinum').length;
+const goldCount = members.filter(m => m.tier === 'Gold').length;
+const silverCount = members.filter(m => m.tier === 'Silver').length;
 const industries = [...new Set(members.flatMap(m => m.industries ?? []).filter(Boolean))].sort();
 const countries = [...new Set(members.map(m => m.country).filter(Boolean))].sort() as string[];
 const heroes = selectHeroes(members);
@@ -40,7 +42,9 @@ const heroEntries = [
 <EndusersLayout
   title="CNCF End Users"
   memberCount={members.length}
-  endUserCount={endUserCount}
+  platinumCount={platinumCount}
+  goldCount={goldCount}
+  silverCount={silverCount}
   totalFunding={totalFunding}
   industries={industries}
   countries={countries}
