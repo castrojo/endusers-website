@@ -33,16 +33,15 @@ export function selectHeroSets(members: SafeMember[]): HeroSets {
   const silver    = members.filter(m => m.tier === 'Silver');
   const academic  = members.filter(m => m.tier === 'Academic' || m.tier === 'Nonprofit');
   return {
-    // Everyone: 2 platinum + 2 gold + 3 silver + 1 academic = 8
+    // Everyone: 2 platinum + 2 gold + 2 silver = 6 (showcase layout)
     everyone: [
       ...heroSlots(platinum, 2),
       ...heroSlots(gold, 2),
-      ...heroSlots(silver, 3),
-      ...heroSlots(academic, 1),
+      ...heroSlots(silver, 2),
     ],
-    platinum: heroSlots(platinum),
-    gold:     heroSlots(gold),
-    silver:   heroSlots(silver),
-    academic: heroSlots(academic),
+    platinum: heroSlots(platinum, 2),
+    gold:     heroSlots(gold, 5),
+    silver:   heroSlots(silver, 6),
+    academic: heroSlots(academic, 4),
   };
 }

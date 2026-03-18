@@ -1,19 +1,12 @@
 ---
 import fs from 'node:fs';
 import EndusersLayout from '../layouts/EndusersLayout.astro';
-import { renderCard } from '../lib/member-renderer';
+import { renderCard, renderShowcaseCard } from '../lib/member-renderer';
 import { renderChangelogEvent, type MemberEvent } from '../lib/changelog-renderer';
 import { selectHeroSets } from '../lib/heroes';
 import type { SafeMember } from '../lib/member-renderer';
 
-const HERO_TIER_COLORS: Record<string, string> = {
-  'Platinum': '#E5E4E2',
-  'Gold': '#FFB300',
-  'Silver': '#C0C0C0',
-  'End User Supporter': '#0086FF',
-  'Academic': '#7B2FBE',
-  'Nonprofit': '#00A86B',
-};
+
 
 let members: SafeMember[] = [];
 try {
@@ -76,24 +69,9 @@ const staticMembers = members.slice(0, STATIC_COUNT);
     <section class="heroes-section" aria-label="Daily highlights">
       {(Object.entries(heroSets) as [string, SafeMember[]][]).map(([tabKey, heroes]) => (
         <div class="heroes-grid" data-heroes-tab={tabKey} style={tabKey !== 'everyone' ? 'display:none' : ''}>
-          {heroes.map(member => {
-            const heroColor = HERO_TIER_COLORS[member.tier] ?? 'var(--color-cncf-blue)';
-            return (
-              <div class="hero-card" style={`--hero-color: ${heroColor}`}>
-                <span class="hero-label">{member.tier}</span>
-                <div class="hero-logo-wrap">
-                  {member.logoUrl && <img class="hero-logo" src={member.logoUrl} alt={`${member.name} logo`} loading="lazy" />}
-                </div>
-                <div class="hero-info">
-                  <a class="hero-name" href={member.homepageUrl || '#'} target="_blank" rel="noopener">{member.name}</a>
-                  <div class="hero-meta">
-                    {member.country && <span>{member.countryFlag} {member.country}</span>}
-                    {member.industries?.[0] && <span>{member.industries[0]}</span>}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {heroes.map(member => (
+            <Fragment set:html={renderShowcaseCard(member)} />
+          ))}
         </div>
       ))}
     </section>
@@ -234,7 +212,7 @@ const staticMembers = members.slice(0, STATIC_COUNT);
     all[focusedIdx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     const liveRegion = document.getElementById('kbd-live-region');
     if (liveRegion) {
-      const name = all[focusedIdx].querySelector('.card-name, .member-name, .hero-name, h3, h4')?.textContent ?? '';
+      const name = all[focusedIdx].querySelector('.card-name, .member-name, .hero-name, .showcase-name, h3, h4')?.textContent ?? '';
       liveRegion.textContent = `Focused: ${name}`;
     }
   }

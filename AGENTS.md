@@ -69,6 +69,8 @@ All features verified against source code.
 | Tier badge colors (Gold, Silver, End User, Academic, Nonprofit) | ✅ Done | `member-renderer.ts` |
 | MiniSearch search | ✅ Done | `src/lib/search.ts` |
 | RSS feed | ✅ Done | `src/pages/feed.xml.ts` |
+| Changelog renderer (joined/left/tier_changed/updated events) | ✅ Done | `src/lib/changelog-renderer.ts` |
+| Changelog wired into index.astro (Everyone tab, top 20 events) | ✅ Done | `src/pages/index.astro` |
 
 ## Confirmed Bugs — Fix These
 
@@ -76,9 +78,11 @@ All features verified against source code.
 
 ## Missing Features — Implement These
 
-- [ ] **Hero grid is 4 heroes total, not 2×4 per tab** — Current: `selectHeroes()` returns one hero per tier (endUser/platinum/recentlyJoined/community) = 4 total. Spec: 8 heroes per tab, tab-scoped (everyone/platinum/gold/silver/academic). Must rewrite `src/lib/heroes.ts` to use `heroSlots()` pattern from projects-website, add `selectHeroSets()`, and update `index.astro` to render tab-scoped grids with `data-heroes-tab` attribute. Also need `showHeroesForTab()` logic.
+All previously listed gaps have been resolved as of 2026-03-18.
 
-- [ ] **Staff support section missing entirely** — No `src/data/staff-support.json`, no section in `index.astro`. Add: create JSON file (copy structure from projects-website `maintainers` key), add `<section class="staff-support-section">` to `index.astro` after hero grid, add CSS. Must be committed (add `!src/data/staff-support.json` to .gitignore exception).
+Current backlog:
+- No LWCN newsletter integration — intentional N/A (newsletter covers cloud native projects, not end-user orgs)
+- `summary/use_case` field not in SafeMember — full.json has it; not yet added to Go model
 
 ## Architectural Notes
 

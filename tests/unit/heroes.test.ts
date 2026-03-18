@@ -57,8 +57,8 @@ describe('selectHeroSets', () => {
     );
   });
 
-  it('everyone has exactly 8 heroes', () => {
-    expect(sets.everyone).toHaveLength(8);
+  it('everyone has exactly 6 heroes (2 platinum + 2 gold + 2 silver)', () => {
+    expect(sets.everyone).toHaveLength(6);
   });
 
   it('platinum set is non-empty', () => {
@@ -106,24 +106,22 @@ describe('selectHeroSets', () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it('per-tier sets cap at 8 even with large pool', () => {
+  it('per-tier sets have correct caps for showcase layout (platinum≤2, gold≤5, silver≤6, academic≤4)', () => {
     const sets = selectHeroSets(allMembers);
-    expect(sets.platinum.length).toBeLessThanOrEqual(8);
-    expect(sets.gold.length).toBeLessThanOrEqual(8);
-    expect(sets.silver.length).toBeLessThanOrEqual(8);
-    expect(sets.academic.length).toBeLessThanOrEqual(8);
+    expect(sets.platinum.length).toBeLessThanOrEqual(2);
+    expect(sets.gold.length).toBeLessThanOrEqual(5);
+    expect(sets.silver.length).toBeLessThanOrEqual(6);
+    expect(sets.academic.length).toBeLessThanOrEqual(4);
   });
 
-  it('everyone composition: 2 Platinum + 2 Gold + 3 Silver + 1 Academic/Nonprofit = 8', () => {
+  it('everyone composition: 2 Platinum + 2 Gold + 2 Silver = 6', () => {
     const sets = selectHeroSets(allMembers);
     const tiers = sets.everyone.map(m => m.tier);
     const platCount = tiers.filter(t => t === 'Platinum').length;
     const goldCount  = tiers.filter(t => t === 'Gold').length;
     const silvCount  = tiers.filter(t => t === 'Silver').length;
-    const acadCount  = tiers.filter(t => t === 'Academic' || t === 'Nonprofit').length;
     expect(platCount).toBe(2);
     expect(goldCount).toBe(2);
-    expect(silvCount).toBe(3);
-    expect(acadCount).toBe(1);
+    expect(silvCount).toBe(2);
   });
 });

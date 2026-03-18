@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { renderCard, type SafeMember } from '../../src/lib/member-renderer';
+import { renderCard, renderShowcaseCard, type SafeMember } from '../../src/lib/member-renderer';
 
 const base: SafeMember = {
   name: 'Google', slug: 'google', description: 'Cloud and tech company',
   tier: 'Platinum', isEndUser: false, logoUrl: 'https://example.com/google.svg',
   country: 'United States', city: 'Mountain View', updatedAt: '2024-01-01',
-  joinedAt: '2016-03-01', industries: ['Cloud', 'Software'],
+  joinedAt: '2016-03-15', industries: ['Cloud', 'Software'],
 };
 
 describe('renderCard', () => {
@@ -66,10 +66,10 @@ describe('renderCard', () => {
     expect(html).toContain('data-enduser="true"');
   });
 
-  it('renders country flag emoji in location', () => {
-    const m: SafeMember = { ...base, slug: 'flag-test', city: 'Toronto', country: 'Canada', countryFlag: '🇨🇦' };
+  it('renders country and city in location', () => {
+    const m: SafeMember = { ...base, slug: 'flag-test', city: 'Toronto', country: 'Canada', countryFlag: 'CA' };
     const html = renderCard(m);
-    expect(html).toContain('🇨🇦');
+    expect(html).toContain('CA');
   });
 
   it('formats employee range with en-dash', () => {
@@ -139,5 +139,92 @@ describe('renderCard', () => {
   it('renders data-tier attribute lowercased', () => {
     const html = renderCard(base);
     expect(html).toContain('data-tier="platinum"');
+  });
+
+  it('does NOT render type-badge (for_profit/non_profit)', () => {
+    const m: SafeMember = { ...base, slug: 'no-tb', companyType: 'for_profit' };
+    const html = renderCard(m);
+    expect(html).not.toContain('for_profit');
+    expect(html).not.toContain('type-badge');
+  });
+});
+
+describe('renderShowcaseCard', () => {
+  it('has hero-card--showcase class', () => {
+    const html = renderShowcaseCard(base);
+    expect(html).toContain('hero-card--showcase');
+  });
+
+  it('has large logo box with showcase-logo-box class', () => {
+    const html = renderShowcaseCard(base);
+    expect(html).toContain('showcase-logo-box');
+  });
+
+  it('renders name as a link when homepageUrl present', () => {
+    const m: SafeMember = { ...base, slug: 'sc-link', homepageUrl: 'https://google.com' };
+    const html = renderShowcaseCard(m);
+    expect(html).toContain('href="https://google.com"');
+    expect(html).toContain('Google');
+  });
+
+  it('renders description', () => {
+    const html = renderShowcaseCard(base);
+    expect(html).toContain('Cloud and tech company');
+  });
+
+  it('renders country', () => {
+    const html = renderShowcaseCard(base);
+    expect(html).toContain('United States');
+  });
+
+  it('renders industry', () => {
+    const html = renderShowcaseCard(base);
+    expect(html).toContain('Cloud');
+  });
+
+  it('renders employee count', () => {
+    const m: SafeMember = { ...base, slug: 'sc-emp', employeesMin: 10000, employeesMax: 50000 };
+    const html = renderShowcaseCard(m);
+    expect(html).toContain('10,000');
+  });
+
+  it('renders funding', () => {
+    const m: SafeMember = { ...base, slug: 'sc-fund', totalFunding: 2_500_000_000 };
+    const html = renderShowcaseCard(m);
+    expect(html).toContain('$2.5B');
+  });
+
+  it('renders joined date', () => {
+    const html = renderShowcaseCard(base);
+    expect(html).toContain('March 2016');
+  });
+
+  it('renders LinkedIn link', () => {
+    const m: SafeMember = { ...base, slug: 'sc-li', linkedInUrl: 'https://linkedin.com/company/google' };
+    const html = renderShowcaseCard(m);
+    expect(html).toContain('href="https://linkedin.com/company/google"');
+    expect(html).toContain('LinkedIn');
+  });
+
+  it('does NOT render type-badge (for_profit/non_profit)', () => {
+    const m: SafeMember = { ...base, slug: 'sc-type', companyType: 'for_profit' };
+    const html = renderShowcaseCard(m);
+    expect(html).not.toContain('for_profit');
+    expect(html).not.toContain('type-badge');
+  });
+
+  it('has tier accent color as CSS variable', () => {
+    const html = renderShowcaseCard(base);
+    expect(html).toContain('#E5E4E2'); // Platinum color
+  });
+
+  it('renders logo img src', () => {
+    const html = renderShowcaseCard(base);
+    expect(html).toContain('https://example.com/google.svg');
+  });
+
+  it('escapes XSS in name', () => {
+    const html = renderShowcaseCard({ ...base, name: '<script>xss</script>', slug: 'xss-sc' });
+    expect(html).not.toContain('<script>');
   });
 });
