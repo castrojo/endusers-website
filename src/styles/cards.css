@@ -677,3 +677,31 @@ a.showcase-name:hover {
   color: var(--color-text-muted);
 }
 .arch-empty a { color: var(--color-accent-fg, #0086FF); }
+
+/* Tag chips — outlined gray pills, distinct from filled teal .arch-reftype chips. */
+.arch-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.arch-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+
+/* Submitted date rendered below the CTA link. */
+.arch-submitted {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  margin-top: 6px;
+  font-style: italic;
+}

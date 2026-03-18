@@ -38,7 +38,8 @@ test.describe('navigation', () => {
   });
 
   test('stats box shows member counts', async ({ page }) => {
-    const statsBox = page.locator('.stats-box');
+    // Target the member stats box specifically — arch-stats-box is a sibling inside arch-sidebar-sections.
+    const statsBox = page.locator('#member-sidebar-sections .stats-box');
     await expect(statsBox).toBeVisible();
     const text = await statsBox.textContent();
     // Should have numeric counts

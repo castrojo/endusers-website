@@ -25,6 +25,7 @@ pnpm-debug.log*
 
 src/data/
 !src/data/staff-support.json
+!src/data/architectures.json
 public/data/
 .sync-cache/
 endusers-go/endusers

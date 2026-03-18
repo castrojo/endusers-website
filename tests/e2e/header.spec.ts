@@ -136,7 +136,7 @@ test.describe('header — desktop (1280×800)', () => {
     expect(activePill?.trim()).toBe('End Users');
   });
 
-  test('5 tabs: Everyone, Platinum, Gold, Silver, Academic & Nonprofit', async ({ page }) => {
+  test('6 tabs: Everyone, Platinum, Gold, Silver, Academic & Nonprofit, Reference Architectures', async ({ page }) => {
     const tabs = await page.locator('.section-nav .section-link').allTextContents();
     const trimmed = tabs.map(t => t.trim());
     expect(trimmed).toContain('Everyone');
@@ -144,7 +144,8 @@ test.describe('header — desktop (1280×800)', () => {
     expect(trimmed).toContain('Platinum');
     expect(trimmed).toContain('Gold');
     expect(trimmed).toContain('Silver');
-    expect(tabs.length).toBe(5);
+    expect(trimmed.some(t => t.includes('Reference Architectures'))).toBe(true);
+    expect(tabs.length).toBe(6);
   });
 });
 

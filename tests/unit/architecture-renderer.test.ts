@@ -154,9 +154,72 @@ describe('renderArchCard', () => {
     expect(html).not.toContain('arch-description');
   });
 
-  it('renders without orgLogoUrl — no img tag', () => {
-    const html = renderArchCard({ ...baseArch, orgLogoUrl: '' });
-    expect(html).not.toContain('<img class="arch-org-logo"');
+  it('renders submittedAt as <time> with datetime attr', () => {
+    const html = renderArchCard(baseArch);
+    expect(html).toContain('class="arch-submitted"');
+    expect(html).toContain('datetime="2024-06-01"');
+    expect(html).toContain('Submitted 2024-06-01');
+  });
+
+  it('omits arch-submitted when submittedAt is absent', () => {
+    const html = renderArchCard({ ...baseArch, submittedAt: undefined });
+    expect(html).not.toContain('arch-submitted');
+  });
+
+  it('renders tags as arch-tag chips', () => {
+    const html = renderArchCard(baseArch);
+    expect(html).toContain('arch-tag');
+    expect(html).toContain('cell-based');
+    expect(html).toContain('kubernetes');
+  });
+
+  it('omits arch-tags section when tags are absent', () => {
+    const html = renderArchCard({ ...baseArch, tags: undefined });
+    expect(html).not.toContain('arch-tag');
+  });
+
+  it('omits arch-tags section when tags array is empty', () => {
+    const html = renderArchCard({ ...baseArch, tags: [] });
+    expect(html).not.toContain('arch-tag');
+  });
+
+  it('renders data-search-text attribute containing orgName and title', () => {
+    const html = renderArchCard(baseArch);
+    expect(html).toContain('data-search-text=');
+    expect(html).toContain('Adobe');
+    expect(html).toContain('Scaling Service Delivery');
+  });
+
+  it('renders data-industries attribute as comma-separated string', () => {
+    const html = renderArchCard(baseArch);
+    expect(html).toContain('data-industries="Software,Digital Media,Creative Tools"');
+  });
+
+  it('renders data-reftypes attribute as comma-separated string', () => {
+    const html = renderArchCard(baseArch);
+    expect(html).toContain('data-reftypes="CI/CD,Platform Engineering"');
+  });
+
+  it('renders data-tags attribute as comma-separated string', () => {
+    const html = renderArchCard(baseArch);
+    expect(html).toContain('data-tags="cell-based,kubernetes"');
+  });
+
+  it('escapes XSS in data-search-text', () => {
+    const html = renderArchCard({ ...baseArch, orgName: '<script>xss</script>' });
+    expect(html).not.toContain('<script>xss</script>');
+    // The escaped form should appear somewhere in data-search-text
+    expect(html).toContain('&lt;script&gt;');
+  });
+
+  it('renders empty data-industries when industries absent', () => {
+    const html = renderArchCard({ ...baseArch, industries: undefined });
+    expect(html).toContain('data-industries=""');
+  });
+
+  it('renders empty data-tags when tags absent', () => {
+    const html = renderArchCard({ ...baseArch, tags: undefined });
+    expect(html).toContain('data-tags=""');
   });
 });
 

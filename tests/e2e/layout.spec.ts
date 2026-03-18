@@ -48,7 +48,8 @@ test.describe('layout structure', () => {
     // Use getBoundingClientRect — toBeVisible() is forbidden for order assertions
     // (it checks existence/CSS visibility only, has no concept of DOM position)
     const infoBox = page.locator('aside.sidebar details, aside.sidebar .info-box').first();
-    const statsBox = page.locator('aside.sidebar .stats-box');
+    // Target the member stats box specifically (arch-stats-box is inside arch-sidebar-sections).
+    const statsBox = page.locator('#member-sidebar-sections .stats-box');
     const infoRect = await infoBox.boundingBox();
     const statsRect = await statsBox.boundingBox();
     expect(infoRect).not.toBeNull();

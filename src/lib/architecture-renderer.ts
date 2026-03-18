@@ -84,6 +84,11 @@ export function renderArchCard(a: SafeArchitecture): string {
     const types = a.refArchTypes.map(t => `<span class="arch-reftype">${escapeHtml(t)}</span>`).join('');
     meta.push(`<div class="arch-reftypes">${types}</div>`);
   }
+  if (a.tags?.length) {
+    // Tags rendered as outlined gray pills, visually distinct from teal reftype chips.
+    const tagChips = a.tags.map(t => `<span class="arch-tag">${escapeHtml(t)}</span>`).join('');
+    meta.push(`<div class="arch-tags">${tagChips}</div>`);
+  }
   if (a.industries?.length) {
     meta.push(`<div class="arch-industries">${escapeHtml(a.industries.slice(0, 3).join(' · '))}</div>`);
   }
@@ -99,11 +104,26 @@ export function renderArchCard(a: SafeArchitecture): string {
     ? `<a class="arch-link" href="${escapeHtml(a.archUrl)}" target="_blank" rel="noopener">Read Architecture →</a>`
     : `<a class="arch-link" href="${escapeHtml(a.archUrl)}" target="_blank" rel="noopener">Read Architecture →</a>`;
 
+  // submittedAt rendered as a <time> element below the CTA link.
+  const submittedHtml = a.submittedAt
+    ? `<time class="arch-submitted" datetime="${escapeHtml(a.submittedAt)}">Submitted ${escapeHtml(a.submittedAt)}</time>`
+    : '';
+
+  // Data attributes used by client-side search and filter (arch-search.ts + applyFilters).
+  const searchText = [
+    a.orgName, a.title, a.orgDescription ?? '',
+    ...(a.tags ?? []), ...(a.industries ?? []), ...(a.refArchTypes ?? []),
+  ].filter(Boolean).join(' ');
+
   const ribbon = renderProjectRibbon(a.projects ?? []);
 
   return `<article
     class="arch-card"
     data-slug="${escapeHtml(a.slug)}"
+    data-search-text="${escapeHtml(searchText)}"
+    data-industries="${escapeHtml((a.industries ?? []).join(','))}"
+    data-reftypes="${escapeHtml((a.refArchTypes ?? []).join(','))}"
+    data-tags="${escapeHtml((a.tags ?? []).join(','))}"
   >
     <div class="arch-accent-bar"></div>
     <div class="arch-logo-box">${logoHtml}</div>
@@ -115,6 +135,7 @@ export function renderArchCard(a: SafeArchitecture): string {
       ${meta.length ? `<div class="arch-meta">${meta.join('')}</div>` : ''}
       ${sizesHtml}
       ${readMore}
+      ${submittedHtml}
     </div>
     ${ribbon}
   </article>`;

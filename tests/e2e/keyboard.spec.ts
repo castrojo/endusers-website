@@ -133,7 +133,9 @@ test.describe('keyboard shortcuts', () => {
     await expect(page.locator('.section-link.active')).toHaveAttribute('data-tab', 'everyone');
     await page.keyboard.press('Shift+Tab');
     await page.waitForTimeout(200);
-    await expect(page.locator('.section-link.active')).toHaveAttribute('data-tab', 'academic');
+    // 6 tabs now: everyone→platinum→gold→silver→academic→architectures.
+    // Wrapping back from everyone lands on architectures (index 5).
+    await expect(page.locator('.section-link.active')).toHaveAttribute('data-tab', 'architectures');
   });
 
   test('"o" opens focused card link in new tab', async ({ page }) => {

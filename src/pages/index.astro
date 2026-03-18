@@ -61,6 +61,13 @@ const industries = [...new Set(members.flatMap(m => m.industries ?? []).filter(B
 const countries = [...new Set(members.map(m => m.country).filter(Boolean))].sort() as string[];
 const heroSets = selectHeroSets(members);
 
+// Arch stats — computed at build time from architectures.json.
+const archRefTypes = [...new Set(architectures.flatMap(a => a.refArchTypes ?? []))].sort();
+const archIndustryList = [...new Set(architectures.flatMap(a => a.industries ?? []))].sort();
+const archProjectNames = new Set(architectures.flatMap(a => (a.projects ?? []).map(p => p.name)));
+const archIndustryCount = archIndustryList.length;
+const archProjectCount = archProjectNames.size;
+
 const STATIC_COUNT = 30;
 const staticMembers = members.slice(0, STATIC_COUNT);
 ---
@@ -73,6 +80,11 @@ const staticMembers = members.slice(0, STATIC_COUNT);
   totalFunding={totalFunding}
   industries={industries}
   countries={countries}
+  archCount={architectures.length}
+  archRefTypes={archRefTypes}
+  archIndustryList={archIndustryList}
+  archIndustryCount={archIndustryCount}
+  archProjectCount={archProjectCount}
 >
   <div slot="heroes">
     <section class="heroes-section" aria-label="Daily highlights">
@@ -138,6 +150,7 @@ const staticMembers = members.slice(0, STATIC_COUNT);
 
 <script>
   import { initSearch, searchMembers, getAllMembers } from '../lib/search';
+  import { initArchSearch, searchArchSlugs, resetArchSearch } from '../lib/arch-search';
   import { renderCard } from '../lib/member-renderer';
   import { initTabs, filterByTab } from '../lib/tabs';
   import { initKeyboard, tabFromNumber } from '../lib/keyboard';
@@ -169,12 +182,35 @@ const staticMembers = members.slice(0, STATIC_COUNT);
   }
 
   function applyFilters() {
-    // architectures tab has its own grid — member filters don't apply
+    // ── Arch tab — own grid, own search, own filters ──────────────────────
     if (currentTab === 'architectures') {
+      const slugMatches = searchArchSlugs(currentQuery);
+      const archRefTypeFilter = (document.getElementById('arch-reftype-filter') as HTMLSelectElement | null)?.value ?? '';
+      const archIndustryFilter = (document.getElementById('arch-industry-filter') as HTMLSelectElement | null)?.value ?? '';
+
+      let visibleCount = 0;
+      document.querySelectorAll<HTMLElement>('.arch-card[data-slug]').forEach(card => {
+        const slug = card.dataset.slug ?? '';
+        const industries = card.dataset.industries ?? '';
+        const reftypes = card.dataset.reftypes ?? '';
+
+        const passesSearch = slugMatches === null || slugMatches.has(slug);
+        const passesType = !archRefTypeFilter || reftypes.split(',').map(s => s.trim()).includes(archRefTypeFilter);
+        const passesIndustry = !archIndustryFilter || industries.split(',').map(s => s.trim()).includes(archIndustryFilter);
+
+        const visible = passesSearch && passesType && passesIndustry;
+        card.style.display = visible ? '' : 'none';
+        if (visible) visibleCount++;
+      });
+
+      searchCount.textContent = currentQuery ? String(visibleCount) : '';
       grid.style.display = 'none';
       noResults.style.display = 'none';
       return;
     }
+
+    // ── Member tabs ───────────────────────────────────────────────────────
+    // architectures tab has its own grid — member filters don't apply
     let filtered = filterByTab(allMembers, currentTab);
     if (currentQuery.trim()) {
       const results = searchMembers(currentQuery);
@@ -209,17 +245,33 @@ const staticMembers = members.slice(0, STATIC_COUNT);
     const changelogSection = document.querySelector<HTMLElement>('#changelog-section');
     const archGrid = document.getElementById('arch-grid');
     const membersGrid = document.getElementById('members-grid');
+    const memberSidebar = document.getElementById('member-sidebar-sections');
+    const archSidebar = document.getElementById('arch-sidebar-sections');
 
     const isArchTab = tab === 'architectures';
 
-    // Arch tab: show arch grid, hide member grid + heroes + sidebar sections
+    // Arch tab: show arch grid + arch sidebar, hide member grid + member sidebar + heroes.
     if (archGrid) archGrid.style.display = isArchTab ? 'grid' : 'none';
     if (membersGrid) membersGrid.style.display = isArchTab ? 'none' : '';
+    if (memberSidebar) memberSidebar.style.display = isArchTab ? 'none' : '';
+    if (archSidebar) archSidebar.style.display = isArchTab ? '' : 'none';
     if (heroesSection) heroesSection.style.display = isArchTab ? 'none' : '';
     if (staffSection) staffSection.style.display = isArchTab ? 'none' : '';
     if (changelogSection) changelogSection.style.display = (isArchTab || tab !== 'everyone') ? 'none' : '';
 
+    // Swap search placeholder and reset arch filters when leaving the arch tab.
+    if (searchInput) {
+      searchInput.placeholder = isArchTab ? 'Search architectures... (/)' : 'Search members... (/)';
+      searchInput.setAttribute('aria-label', isArchTab ? 'Search architectures' : 'Search members');
+    }
     if (!isArchTab) {
+      const reftypeSelect = document.getElementById('arch-reftype-filter') as HTMLSelectElement | null;
+      const industrySelect = document.getElementById('arch-industry-filter') as HTMLSelectElement | null;
+      if (reftypeSelect) reftypeSelect.value = '';
+      if (industrySelect) industrySelect.value = '';
+      // Rebuild arch index on next visit (cards may have had display toggled).
+      resetArchSearch();
+
       const heroKey = ['platinum', 'gold', 'silver', 'academic'].includes(tab) ? tab : 'everyone';
       document.querySelectorAll<HTMLElement>('.heroes-grid[data-heroes-tab]').forEach(g => {
         g.style.display = g.dataset.heroesTab === heroKey ? 'grid' : 'none';
@@ -235,7 +287,7 @@ const staticMembers = members.slice(0, STATIC_COUNT);
   });
 
   const visibleCards = () =>
-    Array.from(document.querySelectorAll<HTMLElement>('.member-card, .hero-card'))
+    Array.from(document.querySelectorAll<HTMLElement>('.member-card, .hero-card, .arch-card'))
       .filter(c => c.offsetParent !== null && c.style.display !== 'none');
 
   let focusedIdx = -1;
@@ -328,4 +380,7 @@ const staticMembers = members.slice(0, STATIC_COUNT);
     currentRegion = (e.target as HTMLSelectElement).value;
     applyFilters();
   });
+
+  document.getElementById('arch-reftype-filter')?.addEventListener('change', () => applyFilters());
+  document.getElementById('arch-industry-filter')?.addEventListener('change', () => applyFilters());
 </script>
