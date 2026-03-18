@@ -29,12 +29,12 @@ test.describe('navigation', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('hero section shows 8 spotlight cards on everyone tab', async ({ page }) => {
-    // Only the everyone grid is visible initially; others have display:none
+  test('hero section shows 6 spotlight cards on everyone tab', async ({ page }) => {
+    // selectHeroSets everyone = 2 platinum + 2 gold + 2 silver = 6
     const visibleGrid = page.locator('.heroes-grid[data-heroes-tab="everyone"]');
     await expect(visibleGrid).toBeVisible({ timeout: 5000 });
     const count = await visibleGrid.locator('.hero-card').count();
-    expect(count).toBe(8);
+    expect(count).toBe(6);
   });
 
   test('stats box shows member counts', async ({ page }) => {
@@ -47,9 +47,10 @@ test.describe('navigation', () => {
   });
 
   test('cards contain expected content: badge, name, description', async ({ page }) => {
-    const firstCard = page.locator('.member-card').first();
+    // Scope to #members-grid — changelog event cards also use .member-card but have no tier-badge.
+    const firstCard = page.locator('#members-grid .member-card').first();
     await expect(firstCard).toBeVisible();
-    await expect(firstCard.locator('[class*="badge"], [class*="tier"]').first()).toBeVisible();
+    await expect(firstCard.locator('.tier-badge').first()).toBeVisible({ timeout: 10000 });
     await expect(firstCard.locator('.card-name, .member-name, h3, h4')).toBeVisible();
   });
 

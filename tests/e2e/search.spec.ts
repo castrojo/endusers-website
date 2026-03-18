@@ -47,9 +47,11 @@ test.describe('search', () => {
   });
 
   test('no results for nonsense query', async ({ page }) => {
+    // MiniSearch uses fuzzy:0.2 — test the semantic no-results state rather than
+    // counting cards, which is fragile against partial fuzzy matches.
     await page.fill('#search-input', 'xyznonexistentmember123');
     await page.waitForTimeout(500);
-    const visibleCards = await page.locator('.member-card:visible').count();
-    expect(visibleCards).toBe(0);
+    await expect(page.locator('#no-results')).toBeVisible();
+    await expect(page.locator('#members-grid')).toBeHidden();
   });
 });
