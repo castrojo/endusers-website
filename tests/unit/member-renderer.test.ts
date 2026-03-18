@@ -84,4 +84,60 @@ describe('renderCard', () => {
     const html = renderCard(m);
     expect(html).toContain('NASDAQ: GOOG');
   });
+
+  it('renders silver tier color #C0C0C0', () => {
+    const silver: SafeMember = { ...base, slug: 'silver-co', tier: 'Silver' };
+    const html = renderCard(silver);
+    expect(html).toContain('#C0C0C0');
+  });
+
+  it('renders academic tier color #7B2FBE', () => {
+    const ac: SafeMember = { ...base, slug: 'academic-co', tier: 'Academic' };
+    const html = renderCard(ac);
+    expect(html).toContain('#7B2FBE');
+  });
+
+  it('renders logo img with src when logoUrl is present', () => {
+    const m: SafeMember = { ...base, slug: 'logo-test', logoUrl: 'https://example.com/logo.svg' };
+    const html = renderCard(m);
+    expect(html).toContain('src="https://example.com/logo.svg"');
+  });
+
+  it('renders LinkedIn link when linkedInUrl is present', () => {
+    const m: SafeMember = { ...base, slug: 'linkedin-test', linkedInUrl: 'https://linkedin.com/company/google' };
+    const html = renderCard(m);
+    expect(html).toContain('href="https://linkedin.com/company/google"');
+    expect(html).toContain('LinkedIn');
+  });
+
+  it('renders Twitter link when twitterUrl is present', () => {
+    const m: SafeMember = { ...base, slug: 'twitter-test', twitterUrl: 'https://twitter.com/google' };
+    const html = renderCard(m);
+    expect(html).toContain('href="https://twitter.com/google"');
+    expect(html).toContain('Twitter');
+  });
+
+  it('does not render ticker section when ticker is absent', () => {
+    const m: SafeMember = { ...base, slug: 'no-ticker' };
+    const html = renderCard(m);
+    expect(html).not.toContain('NASDAQ');
+    expect(html).not.toContain('card-ticker');
+  });
+
+  it('does not render funding when totalFunding is absent', () => {
+    const m: SafeMember = { ...base, slug: 'no-funding' };
+    const html = renderCard(m);
+    expect(html).not.toContain('Funding:');
+  });
+
+  it('does not render description paragraph when description is absent', () => {
+    const m: SafeMember = { ...base, slug: 'no-desc', description: undefined };
+    const html = renderCard(m);
+    expect(html).not.toContain('card-description');
+  });
+
+  it('renders data-tier attribute lowercased', () => {
+    const html = renderCard(base);
+    expect(html).toContain('data-tier="platinum"');
+  });
 });

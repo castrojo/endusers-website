@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import EndusersLayout from '../layouts/EndusersLayout.astro';
 import { renderCard } from '../lib/member-renderer';
+import { renderChangelogEvent, type MemberEvent } from '../lib/changelog-renderer';
 import { selectHeroSets } from '../lib/heroes';
 import type { SafeMember } from '../lib/member-renderer';
 
@@ -40,6 +41,15 @@ try {
   // graceful degradation
 }
 const staffList: StaffPerson[] = staffSupport.maintainers ?? [];
+
+let events: MemberEvent[] = [];
+try {
+  const raw = fs.readFileSync('src/data/changelog.json', 'utf-8');
+  events = JSON.parse(raw) as MemberEvent[];
+} catch {
+  // graceful degradation on fresh clone
+}
+const memberBySlug = new Map(members.map(m => [m.slug, m]));
 
 const totalFunding = members.reduce((sum, m) => sum + (m.totalFunding ?? 0), 0);
 const platinumCount = members.filter(m => m.tier === 'Platinum').length;
@@ -107,6 +117,15 @@ const staticMembers = members.slice(0, STATIC_COUNT);
             </a>
           ))}
         </div>
+      </section>
+    )}
+
+    {events.length > 0 && (
+      <section id="changelog-section" aria-label="Member activity">
+        <h2 class="changelog-heading">Member Activity</h2>
+        {events.slice(0, 20).map(event => (
+          <Fragment set:html={renderChangelogEvent(event, memberBySlug.get(event.memberSlug))} />
+        ))}
       </section>
     )}
   </div>
@@ -178,8 +197,10 @@ const staticMembers = members.slice(0, STATIC_COUNT);
   function showHeroesForTab(tab: string) {
     const heroesSection = document.querySelector<HTMLElement>('.heroes-section');
     const staffSection = document.querySelector<HTMLElement>('.staff-support-section');
+    const changelogSection = document.querySelector<HTMLElement>('#changelog-section');
     if (heroesSection) heroesSection.style.display = '';
     if (staffSection) staffSection.style.display = '';
+    if (changelogSection) changelogSection.style.display = tab === 'everyone' ? '' : 'none';
     const heroKey = ['platinum', 'gold', 'silver', 'academic'].includes(tab) ? tab : 'everyone';
     document.querySelectorAll<HTMLElement>('.heroes-grid[data-heroes-tab]').forEach(grid => {
       grid.style.display = grid.dataset.heroesTab === heroKey ? 'grid' : 'none';

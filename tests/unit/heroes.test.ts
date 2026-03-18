@@ -99,4 +99,31 @@ describe('selectHeroSets', () => {
     expect(empty.platinum).toHaveLength(0);
     expect(empty.silver).toHaveLength(0);
   });
+
+  it('everyone set has no duplicate slugs', () => {
+    const sets = selectHeroSets(allMembers);
+    const slugs = sets.everyone.map(m => m.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+
+  it('per-tier sets cap at 8 even with large pool', () => {
+    const sets = selectHeroSets(allMembers);
+    expect(sets.platinum.length).toBeLessThanOrEqual(8);
+    expect(sets.gold.length).toBeLessThanOrEqual(8);
+    expect(sets.silver.length).toBeLessThanOrEqual(8);
+    expect(sets.academic.length).toBeLessThanOrEqual(8);
+  });
+
+  it('everyone composition: 2 Platinum + 2 Gold + 3 Silver + 1 Academic/Nonprofit = 8', () => {
+    const sets = selectHeroSets(allMembers);
+    const tiers = sets.everyone.map(m => m.tier);
+    const platCount = tiers.filter(t => t === 'Platinum').length;
+    const goldCount  = tiers.filter(t => t === 'Gold').length;
+    const silvCount  = tiers.filter(t => t === 'Silver').length;
+    const acadCount  = tiers.filter(t => t === 'Academic' || t === 'Nonprofit').length;
+    expect(platCount).toBe(2);
+    expect(goldCount).toBe(2);
+    expect(silvCount).toBe(3);
+    expect(acadCount).toBe(1);
+  });
 });

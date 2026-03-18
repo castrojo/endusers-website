@@ -9,9 +9,9 @@ import (
 func TestFilterAndConvert_OnlyCNCFMembers(t *testing.T) {
 	dataset := models.FullDataset{
 		Items: []models.FullItem{
-			{Name: "Acme Corp", Category: "CNCF Members", MemberSubcategory: "Platinum"},
+			{Name: "Acme Corp", Category: "CNCF Members", MemberSubcategory: "Platinum", EndUser: true},
 			{Name: "NotAMember", Category: "CNCF Projects"},
-			{Name: "Beta Systems", Category: "CNCF Members", MemberSubcategory: "Gold"},
+			{Name: "Beta Systems", Category: "CNCF Members", MemberSubcategory: "Gold", EndUser: true},
 			{Name: "Other Thing", Category: "Serverless"},
 		},
 		CrunchbaseData: map[string]models.CrunchbaseItem{},
@@ -19,6 +19,36 @@ func TestFilterAndConvert_OnlyCNCFMembers(t *testing.T) {
 	got := filterAndConvert(dataset)
 	if len(got) != 2 {
 		t.Errorf("expected 2 CNCF members, got %d", len(got))
+	}
+}
+
+func TestFilterAndConvert_ExcludesNonEndUsers(t *testing.T) {
+	dataset := models.FullDataset{
+		Items: []models.FullItem{
+			{Name: "Regular Corp", Category: "CNCF Members", MemberSubcategory: "Gold", EndUser: false},
+			{Name: "End User Co", Category: "CNCF Members", MemberSubcategory: "Silver", EndUser: true},
+		},
+		CrunchbaseData: map[string]models.CrunchbaseItem{},
+	}
+	got := filterAndConvert(dataset)
+	if len(got) != 1 {
+		t.Errorf("expected 1 end user member, got %d", len(got))
+	}
+	if got[0].Name != "End User Co" {
+		t.Errorf("expected End User Co, got %s", got[0].Name)
+	}
+}
+
+func TestFilterAndConvert_ExcludesNonCNCFCategory(t *testing.T) {
+	dataset := models.FullDataset{
+		Items: []models.FullItem{
+			{Name: "Random Project", Category: "CNCF Projects", EndUser: true},
+		},
+		CrunchbaseData: map[string]models.CrunchbaseItem{},
+	}
+	got := filterAndConvert(dataset)
+	if len(got) != 0 {
+		t.Errorf("expected 0 members from non-CNCF-Members category, got %d", len(got))
 	}
 }
 
