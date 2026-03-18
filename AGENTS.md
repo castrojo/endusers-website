@@ -76,6 +76,10 @@ All features verified against source code.
 
 (None currently known. Platinum color `#E5E4E2` is correct in member-renderer.ts.)
 
+## Confirmed Bugs — Fix These
+
+- **Arch tab cards not visible at runtime** (2026-03-18): Clicking the Reference Architectures tab shows a blank grid. Cards render correctly in the built HTML (`arch-card` elements with data attrs are present in `dist/index.html`), so the fault is in the JS tab-switch logic. Suspects: `showHeroesForTab()` display toggle in `index.astro`, or `applyFilters()` arch branch clobbering `arch-grid` visibility. Root cause not yet pinned. Add a Playwright test for the arch tab (`tests/e2e/architecture.spec.ts` exists but may not cover this path) and trace the display toggle.
+
 ## Missing Features — Implement These
 
 All previously listed gaps have been resolved as of 2026-03-18.
