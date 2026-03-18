@@ -15,6 +15,7 @@ const fullJSONURL = "https://landscape.cncf.io/data/full.json"
 // FetchResult holds the result of a landscape fetch
 type FetchResult struct {
 	Members  []models.SafeMember
+	Dataset  models.FullDataset
 	ETag     string
 	Modified bool
 }
@@ -54,7 +55,7 @@ func FetchMembers(prevETag string) (*FetchResult, error) {
 	}
 
 	members := filterAndConvert(dataset)
-	return &FetchResult{Members: members, ETag: resp.Header.Get("ETag"), Modified: true}, nil
+	return &FetchResult{Members: members, Dataset: dataset, ETag: resp.Header.Get("ETag"), Modified: true}, nil
 }
 
 func countryFlag(countryName string) string {

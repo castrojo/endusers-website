@@ -23,6 +23,8 @@ type FullItem struct {
 	EndUser           bool   `json:"enduser"`
 	TwitterURL        string `json:"twitter_url"`
 	CrunchbaseURL     string `json:"crunchbase_url"`
+	// Project maturity level for CNCF projects ("graduated", "incubating", "sandbox", "")
+	Project           string `json:"project,omitempty"`
 }
 
 // CrunchbaseItem is the pre-enriched company data

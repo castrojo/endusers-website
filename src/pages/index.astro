@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import EndusersLayout from '../layouts/EndusersLayout.astro';
 import { renderCard, renderShowcaseCard } from '../lib/member-renderer';
 import { renderChangelogEvent, type MemberEvent } from '../lib/changelog-renderer';
+import { renderArchCard, type SafeArchitecture } from '../lib/architecture-renderer';
 import { selectHeroSets } from '../lib/heroes';
 import type { SafeMember } from '../lib/member-renderer';
 
@@ -43,6 +44,14 @@ try {
   // graceful degradation on fresh clone
 }
 const memberBySlug = new Map(members.map(m => [m.slug, m]));
+
+let architectures: SafeArchitecture[] = [];
+try {
+  const raw = fs.readFileSync('src/data/architectures.json', 'utf-8');
+  architectures = JSON.parse(raw) as SafeArchitecture[];
+} catch {
+  // graceful degradation — architectures tab will show empty state
+}
 
 const totalFunding = members.reduce((sum, m) => sum + (m.totalFunding ?? 0), 0);
 const platinumCount = members.filter(m => m.tier === 'Platinum').length;
@@ -109,6 +118,22 @@ const staticMembers = members.slice(0, STATIC_COUNT);
   </div>
 
   {staticMembers.map(m => <Fragment set:html={renderCard(m)} />)}
+
+  <Fragment slot="architectures">
+    <div class="arch-intro">
+      <p>These organizations didn't just adopt cloud native — they published how. Each architecture
+      is a collaboration between an end user, CNCF projects, and the people who built them.</p>
+    </div>
+    {architectures.length > 0
+      ? architectures.map(a => <Fragment set:html={renderArchCard(a)} />)
+      : <div class="arch-empty">
+          <p>No reference architectures loaded yet.</p>
+          <a href="https://architecture.cncf.io/architectures/?all=true" target="_blank" rel="noopener noreferrer">
+            Browse architectures on architecture.cncf.io →
+          </a>
+        </div>
+    }
+  </Fragment>
 </EndusersLayout>
 
 <script>
@@ -144,6 +169,12 @@ const staticMembers = members.slice(0, STATIC_COUNT);
   }
 
   function applyFilters() {
+    // architectures tab has its own grid — member filters don't apply
+    if (currentTab === 'architectures') {
+      grid.style.display = 'none';
+      noResults.style.display = 'none';
+      return;
+    }
     let filtered = filterByTab(allMembers, currentTab);
     if (currentQuery.trim()) {
       const results = searchMembers(currentQuery);
@@ -176,13 +207,24 @@ const staticMembers = members.slice(0, STATIC_COUNT);
     const heroesSection = document.querySelector<HTMLElement>('.heroes-section');
     const staffSection = document.querySelector<HTMLElement>('.staff-support-section');
     const changelogSection = document.querySelector<HTMLElement>('#changelog-section');
-    if (heroesSection) heroesSection.style.display = '';
-    if (staffSection) staffSection.style.display = '';
-    if (changelogSection) changelogSection.style.display = tab === 'everyone' ? '' : 'none';
-    const heroKey = ['platinum', 'gold', 'silver', 'academic'].includes(tab) ? tab : 'everyone';
-    document.querySelectorAll<HTMLElement>('.heroes-grid[data-heroes-tab]').forEach(grid => {
-      grid.style.display = grid.dataset.heroesTab === heroKey ? 'grid' : 'none';
-    });
+    const archGrid = document.getElementById('arch-grid');
+    const membersGrid = document.getElementById('members-grid');
+
+    const isArchTab = tab === 'architectures';
+
+    // Arch tab: show arch grid, hide member grid + heroes + sidebar sections
+    if (archGrid) archGrid.style.display = isArchTab ? 'grid' : 'none';
+    if (membersGrid) membersGrid.style.display = isArchTab ? 'none' : '';
+    if (heroesSection) heroesSection.style.display = isArchTab ? 'none' : '';
+    if (staffSection) staffSection.style.display = isArchTab ? 'none' : '';
+    if (changelogSection) changelogSection.style.display = (isArchTab || tab !== 'everyone') ? 'none' : '';
+
+    if (!isArchTab) {
+      const heroKey = ['platinum', 'gold', 'silver', 'academic'].includes(tab) ? tab : 'everyone';
+      document.querySelectorAll<HTMLElement>('.heroes-grid[data-heroes-tab]').forEach(g => {
+        g.style.display = g.dataset.heroesTab === heroKey ? 'grid' : 'none';
+      });
+    }
   }
 
   initTabs((tabId) => { currentTab = tabId; showHeroesForTab(tabId); applyFilters(); });

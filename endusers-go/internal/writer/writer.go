@@ -33,7 +33,21 @@ func WriteMembers(members []models.SafeMember, updatedAt map[string]string) erro
 	return os.WriteFile(filepath.Join(dataDir, "members.json"), data, 0644)
 }
 
-// WriteChangelog merges new events with existing changelog and writes to disk
+// WriteArchitectures writes the architectures list to src/data/architectures.json.
+// Architectures are sorted by SubmittedAt descending (most recent first).
+func WriteArchitectures(architectures []models.SafeArchitecture) error {
+	if err := os.MkdirAll(dataDir, 0755); err != nil {
+		return err
+	}
+	sort.Slice(architectures, func(i, j int) bool {
+		return architectures[i].SubmittedAt > architectures[j].SubmittedAt
+	})
+	data, err := json.MarshalIndent(architectures, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(dataDir, "architectures.json"), data, 0644)
+}
 func WriteChangelog(newEvents []models.Event, existingPath string) error {
 	if err := os.MkdirAll(dataDir, 0755); err != nil {
 		return err

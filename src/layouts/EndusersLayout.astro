@@ -101,6 +101,7 @@ const base = import.meta.env.BASE_URL;
         <button class="section-link" data-tab="gold">Gold</button>
         <button class="section-link" data-tab="silver">Silver</button>
         <button class="section-link" data-tab="academic">Academic &amp; Nonprofit</button>
+        <button class="section-link" data-tab="architectures">Reference Architectures</button>
       </nav>
     </div>
   </header>
@@ -151,6 +152,9 @@ const base = import.meta.env.BASE_URL;
       <slot name="heroes" />
       <div id="members-grid" class="members-grid">
         <slot />
+      </div>
+      <div id="arch-grid" class="arch-grid" style="display:none">
+        <slot name="architectures" />
       </div>
       <div id="no-results" class="no-results" style="display:none">No members match your search.</div>
     </div>

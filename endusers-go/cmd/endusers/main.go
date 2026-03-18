@@ -49,4 +49,17 @@ func main() {
 	fmt.Printf("Total end users: %d  (Platinum:%d Gold:%d Silver:%d EndUserSupporter:%d Academic:%d Nonprofit:%d)\n",
 		len(result.Members), tiers["Platinum"], tiers["Gold"], tiers["Silver"], tiers["End User"], tiers["Academic"], tiers["Nonprofit"])
 	_, _ = fmt.Fprintf(os.Stderr, "endusers-website: wrote %d members, %d events\n", len(result.Members), len(events))
+
+	// --- Architecture pipeline ---
+	fmt.Println("Fetching reference architectures from github.com/cncf/architecture...")
+	architectures, err := fetcher.FetchArchitectures(result.Dataset)
+	if err != nil {
+		// Non-fatal: log and continue so member data is never blocked by arch fetch failure.
+		fmt.Printf("warning: architecture fetch failed: %v\n", err)
+	} else {
+		if err := writer.WriteArchitectures(architectures); err != nil {
+			log.Fatalf("writing architectures: %v", err)
+		}
+		fmt.Printf("Wrote %d reference architectures to src/data/architectures.json\n", len(architectures))
+	}
 }

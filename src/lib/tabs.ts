@@ -1,4 +1,4 @@
-export type TabId = 'everyone' | 'platinum' | 'gold' | 'silver' | 'academic';
+export type TabId = 'everyone' | 'platinum' | 'gold' | 'silver' | 'academic' | 'architectures';
 
 export function initTabs(onTabChange: (tabId: TabId) => void): void {
   const saved = (localStorage.getItem('endusers-active-tab') as TabId) ?? 'everyone';
@@ -25,6 +25,9 @@ export function filterByTab(members: import('./member-renderer').SafeMember[], t
     case 'gold': return members.filter(m => m.tier === 'Gold');
     case 'silver': return members.filter(m => m.tier === 'Silver');
     case 'academic': return members.filter(m => m.tier === 'Academic' || m.tier === 'Nonprofit');
+    // architectures tab shows a separate grid — member list is hidden entirely.
+    case 'architectures': return [];
     default: return members;
   }
 }
+
