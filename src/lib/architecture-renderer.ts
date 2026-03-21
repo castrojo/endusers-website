@@ -14,6 +14,7 @@ export interface SafeArchitecture {
   archUrl: string;
   submittedAt?: string;
   projects?: ArchProject[];
+  bodyHTML?: string;      // pre-rendered HTML body from Go pipeline
 }
 
 export interface ArchProject {
@@ -21,6 +22,7 @@ export interface ArchProject {
   logoUrl?: string;
   maturity?: string; // "graduated" | "incubating" | "sandbox" | ""
   usingSince?: string;
+  description?: string;  // prose description extracted from card body
 }
 
 // Maturity accent colors for project ribbon chips.
@@ -111,6 +113,8 @@ export function renderArchCard(a: SafeArchitecture): string {
 
   return `<article
     class="arch-card"
+    role="button"
+    tabindex="0"
     data-slug="${escapeHtml(a.slug)}"
     data-search-text="${escapeHtml(searchText)}"
     data-industries="${escapeHtml((a.industries ?? []).join(','))}"
@@ -136,4 +140,34 @@ export function renderArchCard(a: SafeArchitecture): string {
 /** Renders all architectures into a grid string. */
 export function renderArchCards(architectures: SafeArchitecture[]): string {
   return architectures.map(renderArchCard).join('\n');
+}
+
+/** Renders the modal content for a given arch entry. */
+export function renderArchModalContent(arch: SafeArchitecture): string {
+  const projectsHTML = arch.projects?.map(p => `
+    <div class="arch-modal-project">
+      <img class="arch-modal-project-logo" src="${p.logoUrl ?? ''}" alt="${escapeHtml(p.name)} logo" loading="lazy" />
+      <div class="arch-modal-project-info">
+        <span class="arch-modal-project-name">${escapeHtml(p.name)}</span>
+        ${p.maturity ? `<span class="arch-modal-maturity arch-modal-maturity--${escapeHtml(p.maturity.toLowerCase())}">${escapeHtml(p.maturity)}</span>` : ''}
+        ${p.usingSince ? `<span class="arch-modal-using-since">Since ${escapeHtml(p.usingSince)}</span>` : ''}
+        ${p.description ? `<p class="arch-modal-project-desc">${escapeHtml(p.description)}</p>` : ''}
+      </div>
+    </div>
+  `).join('') ?? '';
+
+  const refType = arch.refArchTypes?.join(', ') ?? '';
+
+  return `
+    <div class="arch-modal-header">
+      <img class="arch-modal-company-logo" src="${escapeHtml(arch.orgLogoUrl)}" alt="${escapeHtml(arch.orgName)} logo" />
+      <div class="arch-modal-meta">
+        <h2 class="arch-modal-title">${escapeHtml(arch.orgName)}</h2>
+        ${arch.submittedAt ? `<span class="arch-modal-date">Submitted ${escapeHtml(arch.submittedAt)}</span>` : ''}
+        ${refType ? `<span class="arch-modal-ref-type">${escapeHtml(refType)}</span>` : ''}
+      </div>
+    </div>
+    ${projectsHTML ? `<div class="arch-modal-projects"><h3 class="arch-modal-projects-heading">CNCF Projects Used</h3>${projectsHTML}</div>` : ''}
+    ${arch.bodyHTML ? `<div class="arch-modal-body">${arch.bodyHTML}</div>` : ''}
+  `;
 }
