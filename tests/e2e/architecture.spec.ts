@@ -175,6 +175,89 @@ test.describe('Reference Architectures tab', () => {
     expect(await page.locator('.arch-card').count()).toBeGreaterThan(0);
   });
 
+  // ── Reference Architecture modal ───────────────────────────────────────
+
+  test.describe('modal', () => {
+    test('opens when arch card is clicked', async ({ page }) => {
+      await page.click('[data-tab="architectures"]');
+      await page.waitForSelector('.arch-card');
+
+      await page.locator('.arch-card').first().click();
+
+      const dialog = page.locator('#arch-modal');
+      await expect(dialog).toBeVisible();
+
+      await expect(page.locator('#arch-modal-content')).not.toBeEmpty();
+      await expect(page.locator('.arch-modal-company-logo')).toBeVisible();
+      await expect(page.locator('.arch-modal-title')).toBeVisible();
+    });
+
+    test('closes when × button clicked', async ({ page }) => {
+      await page.click('[data-tab="architectures"]');
+      await page.waitForSelector('.arch-card');
+      await page.locator('.arch-card').first().click();
+      await expect(page.locator('#arch-modal')).toBeVisible();
+
+      await page.locator('#arch-modal-close').click();
+      await expect(page.locator('#arch-modal')).not.toBeVisible();
+    });
+
+    test('closes when Escape key pressed', async ({ page }) => {
+      await page.click('[data-tab="architectures"]');
+      await page.waitForSelector('.arch-card');
+      await page.locator('.arch-card').first().click();
+      await expect(page.locator('#arch-modal')).toBeVisible();
+
+      await page.keyboard.press('Escape');
+      await expect(page.locator('#arch-modal')).not.toBeVisible();
+    });
+
+    test('shows CNCF project cards in modal', async ({ page }) => {
+      await page.click('[data-tab="architectures"]');
+      await page.waitForSelector('.arch-card');
+      await page.locator('.arch-card').first().click();
+      await expect(page.locator('#arch-modal')).toBeVisible();
+
+      const projectCount = await page.locator('.arch-modal-project').count();
+      expect(projectCount).toBeGreaterThan(0);
+    });
+
+    test('shows bodyHTML prose content', async ({ page }) => {
+      await page.click('[data-tab="architectures"]');
+      await page.waitForSelector('.arch-card');
+      await page.locator('.arch-card').first().click();
+      await expect(page.locator('#arch-modal')).toBeVisible();
+
+      const body = page.locator('.arch-modal-body');
+      await expect(body).toBeVisible();
+      const text = await body.innerText();
+      expect(text.length).toBeGreaterThan(50);
+    });
+
+    test('Enter key opens modal on focused arch card', async ({ page }) => {
+      await page.click('[data-tab="architectures"]');
+      await page.waitForSelector('.arch-card');
+
+      await page.locator('.arch-card').first().focus();
+      await page.keyboard.press('Enter');
+
+      await expect(page.locator('#arch-modal')).toBeVisible();
+    });
+
+    test('external link is present in modal footer', async ({ page }) => {
+      await page.click('[data-tab="architectures"]');
+      await page.waitForSelector('.arch-card');
+      await page.locator('.arch-card').first().click();
+      await expect(page.locator('#arch-modal')).toBeVisible();
+
+      const extLink = page.locator('#arch-modal-ext-link');
+      await expect(extLink).toBeVisible();
+      const href = await extLink.getAttribute('href');
+      expect(href).toBeTruthy();
+      expect(href).not.toBe('#');
+    });
+  });
+
   // ── Keyboard help modal ─────────────────────────────────────────────────
 
   test('keyboard help modal shows updated j/k/o descriptions', async ({ page }) => {
