@@ -44,9 +44,9 @@ describe('renderArchCard', () => {
     expect(html).toContain('src="https://raw.githubusercontent.com/cncf/architecture/main/content/en/architectures/adobe/adobe-logo.svg"');
   });
 
-  it('renders link to architecture.cncf.io', () => {
+  it('does not render arch link in card (link lives in modal footer instead)', () => {
     const html = renderArchCard(baseArch);
-    expect(html).toContain('href="https://architecture.cncf.io/architectures/adobe/"');
+    expect(html).not.toContain('href="https://architecture.cncf.io/architectures/adobe/"');
   });
 
   it('renders industry tags', () => {

@@ -94,11 +94,9 @@ export function renderArchCard(a: SafeArchitecture): string {
     ? `<div class="arch-sizes">${sizes.join(' · ')}</div>`
     : '';
 
-  const readMore = a.orgUrl
-    ? `<a class="arch-link" href="${escapeHtml(a.archUrl)}" target="_blank" rel="noopener">Read Architecture →</a>`
-    : `<a class="arch-link" href="${escapeHtml(a.archUrl)}" target="_blank" rel="noopener">Read Architecture →</a>`;
-
-  // submittedAt rendered as a <time> element below the CTA link.
+  // submittedAt rendered as a <time> element below the org metadata.
+  // Note: "Read Architecture" link removed from card — it now lives in the modal footer
+  // (arch-modal.ts wires arch-modal-ext-link to arch.archUrl on openArchModal).
   const submittedHtml = a.submittedAt
     ? `<time class="arch-submitted" datetime="${escapeHtml(a.submittedAt)}">Submitted ${escapeHtml(a.submittedAt)}</time>`
     : '';
@@ -130,7 +128,6 @@ export function renderArchCard(a: SafeArchitecture): string {
       ${description ? `<p class="arch-description">${description}</p>` : ''}
       ${meta.length ? `<div class="arch-meta">${meta.join('')}</div>` : ''}
       ${sizesHtml}
-      ${readMore}
       ${submittedHtml}
     </div>
     ${ribbon}
