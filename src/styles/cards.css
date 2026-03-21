@@ -825,8 +825,8 @@ a.showcase-name:hover {
   margin: 0 0 0.75rem;
 }
 .arch-modal-projects-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
 }
 
@@ -838,10 +838,7 @@ a.showcase-name:hover {
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border-default);
   border-radius: 8px;
-  padding: 0.65rem 0.85rem;
-  min-width: 200px;
-  max-width: 280px;
-  flex: 1 1 200px;
+  padding: 0.75rem 1rem;
 }
 .arch-modal-project-logo {
   width: 32px;
@@ -990,8 +987,7 @@ a.showcase-name:hover {
   .arch-modal-footer {
     padding: 0.75rem 1rem;
   }
-  .arch-modal-project {
-    min-width: 100%;
-    max-width: 100%;
+  .arch-modal-projects-grid {
+    grid-template-columns: 1fr;
   }
 }
