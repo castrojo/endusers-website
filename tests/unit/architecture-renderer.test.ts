@@ -116,13 +116,17 @@ describe('renderArchCard', () => {
     expect(html).not.toContain('arch-ribbon');
   });
 
-  it('renders overflow badge when >6 projects', () => {
+  it('renders all projects without overflow badge when >6 projects', () => {
     const projects: ArchProject[] = Array.from({ length: 8 }, (_, i) => ({
       name: `Project${i}`,
       maturity: 'graduated',
     }));
     const html = renderArchCard({ ...baseArch, projects });
-    expect(html).toContain('+2 more');
+    // All projects are shown — no overflow cap or badge.
+    for (let i = 0; i < 8; i++) {
+      expect(html).toContain(`Project${i}`);
+    }
+    expect(html).not.toContain('more');
   });
 
   it('does not render overflow badge when exactly 6 projects', () => {

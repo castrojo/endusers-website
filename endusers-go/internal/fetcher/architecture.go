@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,7 +10,15 @@ import (
 	"strings"
 
 	"github.com/castrojo/endusers-website/endusers-go/internal/models"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/renderer/html"
 	"gopkg.in/yaml.v3"
+)
+
+var mdParser = goldmark.New(
+	goldmark.WithExtensions(extension.GFM),
+	goldmark.WithRendererOptions(html.WithHardWraps()),
 )
 
 const (
@@ -47,6 +56,16 @@ var (
 	cardLogoRe = regexp.MustCompile(`!\[[^\]]*\]\((https://raw\.githubusercontent\.com/cncf/artwork[^)]+)\)`)
 	// Matches: **Using since:** 2021 or **Using since:** 2021-03
 	usingSinceRe = regexp.MustCompile(`\*\*Using since:\*\*\s*([^\n\r]+)`)
+
+	// Strip entire {{< cardpane >}}...{{< /cardpane >}} block ((?s) = dot matches newline, lazy .*? required)
+	cardpaneRe = regexp.MustCompile(`(?s)\{\{<\s*cardpane\s*>\}\}.*?\{\{<\s*/cardpane\s*>\}\}`)
+	// Strip the dangling "## Relevant CNCF projects" heading left after cardpane removal
+	relevantHeadingRe = regexp.MustCompile(`(?m)^##\s+Relevant CNCF projects\s*$\n?`)
+	// Rewrite relative image refs: ./images/foo.svg or images/foo.svg
+	relImgRe = regexp.MustCompile(`!\[([^\]]*)\]\(\.?/?(images/[^)]+)\)`)
+	// Extract prose description from a card body (strip logo line + meta bullets)
+	logoLineRe   = regexp.MustCompile(`(?m)^\s*\[!\[.*?\]\(.*?\)\]\(.*?\)\s*\n?`)
+	metaBulletRe = regexp.MustCompile(`(?m)^\s*-\s*\*\*(Using since|Current version):\*\*[^\n]*\n?`)
 )
 
 // FetchArchitectures fetches all reference architectures from github.com/cncf/architecture
