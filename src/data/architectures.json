@@ -1,0 +1,379 @@
+[
+  {
+    "slug": "zeiss",
+    "title": "ZEISS Vision Care - Order Fulfillment",
+    "orgName": "ZEISS",
+    "orgTeam": "Business Enablement \u0026 IT",
+    "orgUrl": "https://zeiss.com",
+    "orgLogoUrl": "https://raw.githubusercontent.com/cncf/architecture/main/content/en/architectures/zeiss/images/zeiss-logo-rgb.svg",
+    "orgDescription": "ZEISS Vision Care produces spectacle lenses, instruments for refraction, and\nglasses adjustment equipment. A global production network supports consistent\nand reliable order fulfillment across regions. Spectacle lenses are often\nindividually produced for each consumer, which adds complexity to planning,\nmanufacturing, and logistics.",
+    "orgSize": "10,000+",
+    "userSize": "Order processing system (not user-facing)",
+    "industries": [
+      "optics",
+      "optical-manufacturing"
+    ],
+    "tags": [
+      "public-cloud",
+      "mass-manufacturing",
+      "industry",
+      "microservices",
+      "platform engineering"
+    ],
+    "refArchTypes": [
+      "Microservices",
+      "Platform Engineering"
+    ],
+    "archUrl": "https://architecture.cncf.io/architectures/zeiss/",
+    "submittedAt": "2026-03-17",
+    "projects": [
+      {
+        "name": "Kubernetes",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kubernetes/icon/color/kubernetes-icon-color.svg",
+        "usingSince": "2020"
+      },
+      {
+        "name": "Dapr",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/dapr/stacked/color/dapr-stacked-color.svg",
+        "usingSince": "2020"
+      },
+      {
+        "name": "KEDA",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/keda/icon/color/keda-icon-color.svg",
+        "usingSince": "2021/2022"
+      },
+      {
+        "name": "OpenTelemetry",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/opentelemetry/icon/color/opentelemetry-icon-color.svg",
+        "usingSince": "2020"
+      },
+      {
+        "name": "Helm",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/helm/icon/color/helm-icon-color.svg",
+        "usingSince": "2020"
+      }
+    ]
+  },
+  {
+    "slug": "swisscom-cloud-native-telco",
+    "title": "End-to-End Cloud Native Telco Platform Automation at Swisscom",
+    "orgName": "Swisscom (Switzerland) Ltd",
+    "orgTeam": "Mobile",
+    "orgUrl": "https://www.swisscom.com",
+    "orgLogoUrl": "https://raw.githubusercontent.com/cncf/architecture/main/content/en/architectures/swisscom-cloud-native-telco/images/swisscom.png",
+    "orgDescription": "The leading ICT company in Switzerland.",
+    "orgSize": "15,000+",
+    "userSize": "1000+",
+    "industries": [
+      "Communication",
+      "Telecommunication"
+    ],
+    "tags": [
+      "cloud_native",
+      "telco",
+      "5g",
+      "gitops",
+      "kubernetes",
+      "switzerland",
+      "private_cloud"
+    ],
+    "refArchTypes": [
+      "Telco",
+      "Platform Engineering"
+    ],
+    "archUrl": "https://architecture.cncf.io/architectures/swisscom-cloud-native-telco/",
+    "submittedAt": "2026-03-16",
+    "projects": [
+      {
+        "name": "Kubernetes",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kubernetes/icon/color/kubernetes-icon-color.svg",
+        "usingSince": "2021"
+      },
+      {
+        "name": "Flux",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/flux/icon/color/flux-icon-color.svg",
+        "usingSince": "2022"
+      },
+      {
+        "name": "cert-manager",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/cert-manager/icon/color/cert-manager-icon-color.svg",
+        "usingSince": "2023"
+      },
+      {
+        "name": "Headlamp",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/headlamp/icon/color/headlamp-icon-color.svg",
+        "usingSince": "2025"
+      },
+      {
+        "name": "SDC (Schema Driven Configuration)",
+        "usingSince": "2024"
+      },
+      {
+        "name": "CoreDNS",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/coredns/icon/color/coredns-icon-color.svg",
+        "usingSince": "2021"
+      },
+      {
+        "name": "ExternalDNS",
+        "usingSince": "2023"
+      },
+      {
+        "name": "MetalLB",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/metallb/icon/color/metallb-icon-color.svg",
+        "usingSince": "2022"
+      },
+      {
+        "name": "Kubebuilder / controller-runtime",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kubernetes/icon/color/kubernetes-icon-color.svg",
+        "usingSince": "2022"
+      },
+      {
+        "name": "PowerDNS",
+        "usingSince": "2023"
+      },
+      {
+        "name": "NetBox Operator",
+        "usingSince": "2024"
+      },
+      {
+        "name": "NetBox",
+        "usingSince": "2023"
+      }
+    ]
+  },
+  {
+    "slug": "cern-scientific-computing",
+    "title": "A Cloud Native Scientific Computing Platform for CERN NextGen AI",
+    "orgName": "CERN",
+    "orgTeam": "Platforms Infrastructure",
+    "orgUrl": "https://home.cern",
+    "orgLogoUrl": "https://raw.githubusercontent.com/cncf/architecture/main/content/en/architectures/cern-scientific-computing/images/logo.svg",
+    "orgDescription": "CERN is the European Organization for Nuclear Research, is an intergovernmental organization that operates the largest particle physics laboratory in the world.",
+    "orgSize": "10,000+",
+    "userSize": "10,000+",
+    "industries": [
+      "Research",
+      "Public Sector"
+    ],
+    "tags": [
+      "cloud_native",
+      "private_cloud",
+      "kubernetes",
+      "switzerland"
+    ],
+    "refArchTypes": [
+      "AI",
+      "Scientific Computing"
+    ],
+    "archUrl": "https://architecture.cncf.io/architectures/cern-scientific-computing/",
+    "submittedAt": "2026-03-09",
+    "projects": [
+      {
+        "name": "Argo",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/argo/icon/color/argo-icon-color.svg"
+      },
+      {
+        "name": "Bootc",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/bootc/icon/color/bootc-icon-color.svg"
+      },
+      {
+        "name": "ContainerSSH",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/containerssh/icon/containerssh-icon-dark.svg"
+      },
+      {
+        "name": "Longhorn",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/longhorn/icon/color/longhorn-icon-color.svg"
+      },
+      {
+        "name": "Kubernetes",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kubernetes/icon/color/kubernetes-icon-color.svg"
+      },
+      {
+        "name": "Kubeflow",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kubeflow/icon/color/kubeflow-icon.svg"
+      },
+      {
+        "name": "Kserve",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kserve/icon/color/k-serve-icon-color.svg"
+      },
+      {
+        "name": "Kyverno",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kyverno/icon/color/kyverno-icon-color.svg"
+      },
+      {
+        "name": "Kueue"
+      },
+      {
+        "name": "Prometheus",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/prometheus/icon/color/prometheus-icon-color.svg"
+      },
+      {
+        "name": "stargz-snapshotter",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/containerd/icon/color/containerd-icon-color.svg"
+      }
+    ]
+  },
+  {
+    "slug": "swisscom-kubernetes-service",
+    "title": "A modern and sovereign Private Cloud «Kubernetes Service» for Swiss-based enterprises.",
+    "orgName": "Swisscom (Switzerland) Ltd",
+    "orgTeam": "Cloud Native Solutions",
+    "orgUrl": "https://www.swisscom.com",
+    "orgLogoUrl": "https://raw.githubusercontent.com/cncf/architecture/main/content/en/architectures/swisscom-kubernetes-service/images/swisscom.png",
+    "orgDescription": "The leading ICT company in Switzerland.",
+    "orgSize": "15,000+",
+    "userSize": "3000+",
+    "industries": [
+      "Communication",
+      "Telecommunication",
+      "Software",
+      "Cloud"
+    ],
+    "tags": [
+      "service-delivery",
+      "cloud_native",
+      "private_cloud",
+      "kubernetes",
+      "switzerland"
+    ],
+    "refArchTypes": [
+      "Platform Engineering"
+    ],
+    "archUrl": "https://architecture.cncf.io/architectures/swisscom-kubernetes-service/",
+    "submittedAt": "2026-03-04",
+    "projects": [
+      {
+        "name": "Kubernetes",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kubernetes/icon/color/kubernetes-icon-color.svg",
+        "usingSince": "2024"
+      },
+      {
+        "name": "KubeVirt",
+        "usingSince": "2024"
+      },
+      {
+        "name": "Kube-OVN",
+        "usingSince": "2024"
+      },
+      {
+        "name": "MetalLB",
+        "usingSince": "2024"
+      },
+      {
+        "name": "Container Storage Interface (CSI)",
+        "usingSince": "2024"
+      },
+      {
+        "name": "Kyverno",
+        "usingSince": "2024"
+      },
+      {
+        "name": "ArgoCD",
+        "usingSince": "2024"
+      },
+      {
+        "name": "Helm",
+        "usingSince": "2024"
+      },
+      {
+        "name": "CloudNativePG",
+        "usingSince": "2024"
+      }
+    ]
+  },
+  {
+    "slug": "allianz",
+    "title": "Enabling Allianz Direct's scaling through Platform Engineering",
+    "orgName": "Allianz Direct",
+    "orgTeam": "DevOps",
+    "orgUrl": "https://www.allianzdirect.de",
+    "orgLogoUrl": "https://raw.githubusercontent.com/cncf/architecture/main/content/en/architectures/allianz/images/allianz.svg",
+    "orgDescription": "Financial Entity's Entity Cloud Engineering Platform Engineering team is responsible for building a uniform and standardise Cloud experience for the the whole group.",
+    "orgSize": "10,000+",
+    "userSize": "1,000+",
+    "industries": [
+      "Financial",
+      "Insurance"
+    ],
+    "tags": [
+      "finance",
+      "insurance",
+      "europe",
+      "public_cloud",
+      "aws"
+    ],
+    "refArchTypes": [
+      "Platform Engineering"
+    ],
+    "archUrl": "https://architecture.cncf.io/architectures/allianz/",
+    "submittedAt": "2024-10-28",
+    "projects": [
+      {
+        "name": "Kubernetes",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kubernetes/icon/color/kubernetes-icon-color.svg",
+        "usingSince": "2021"
+      },
+      {
+        "name": "Helm",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/helm/icon/color/helm-icon-color.svg",
+        "usingSince": "2021"
+      },
+      {
+        "name": "Argo",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/argo/icon/color/argo-icon-color.svg",
+        "usingSince": "2021"
+      }
+    ]
+  },
+  {
+    "slug": "adobe",
+    "title": "Scaling Adobe’s Service Delivery Foundation with a Cell-based Architecture",
+    "orgName": "Adobe",
+    "orgTeam": "Developer Platforms",
+    "orgUrl": "https://www.adobe.com/",
+    "orgLogoUrl": "https://raw.githubusercontent.com/cncf/architecture/main/content/en/architectures/adobe/images/Adobe_Wordmark_RGB_Red.svg",
+    "orgDescription": "Adobe is the global leader in digital experience and digital media solutions. Our tools and services allow our customers to create groundbreaking digital content, deploy it across media and devices, measure and optimize it over time and achieve greater business success. We help our customers make, manage, measure and monetize their content across every channel and screen.",
+    "orgSize": "10,000+",
+    "userSize": "14,000+",
+    "industries": [
+      "Software",
+      "Digital Media",
+      "Digital Experience"
+    ],
+    "tags": [
+      "adobe",
+      "ci-cd",
+      "service-delivery",
+      "cell-based-architecture",
+      "developer-platforms",
+      "developer-experience"
+    ],
+    "refArchTypes": [
+      "CI/CD"
+    ],
+    "archUrl": "https://architecture.cncf.io/architectures/adobe/",
+    "submittedAt": "2024-10-11",
+    "projects": [
+      {
+        "name": "Kubernetes",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/kubernetes/icon/color/kubernetes-icon-color.svg",
+        "usingSince": "2019"
+      },
+      {
+        "name": "Helm",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/helm/icon/color/helm-icon-color.svg",
+        "usingSince": "2019"
+      },
+      {
+        "name": "Argo",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/argo/icon/color/argo-icon-color.svg",
+        "usingSince": "2022"
+      },
+      {
+        "name": "Backstage",
+        "logoUrl": "https://raw.githubusercontent.com/cncf/artwork/main/projects/backstage/icon/color/backstage-icon-color.svg",
+        "usingSince": "2023"
+      }
+    ]
+  }
+]
