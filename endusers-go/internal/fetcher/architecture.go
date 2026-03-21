@@ -152,6 +152,21 @@ func fetchOneArch(slug string, projectIndex map[string]string) (models.SafeArchi
 		orgLogoURL = fmt.Sprintf("%s/%s/%s", archRawBaseURL, slug, fm.OrgLogoFilename)
 	}
 
+	projects := extractProjects(content, projectIndex)
+
+	// Strip Hugo shortcode block (must happen AFTER extractProjects which needs the cardpane content)
+	stripped := cardpaneRe.ReplaceAllString(content, "")
+	// Strip dangling section heading
+	stripped = relevantHeadingRe.ReplaceAllString(stripped, "")
+	// Rewrite relative image URLs to absolute raw.githubusercontent.com URLs
+	stripped = rewriteImageURLs(stripped, slug)
+	// Render markdown to HTML
+	bodyHTML, err := renderMarkdown(stripped)
+	if err != nil {
+		fmt.Printf("warning: markdown render failed for %s: %v\n", slug, err)
+		bodyHTML = ""
+	}
+
 	return models.SafeArchitecture{
 		Slug:           slug,
 		Title:          strings.TrimSpace(fm.Title),
@@ -167,7 +182,8 @@ func fetchOneArch(slug string, projectIndex map[string]string) (models.SafeArchi
 		RefArchTypes:   fm.ReferenceArch,
 		ArchUrl:        fmt.Sprintf("%s/%s/", archSiteBase, slug),
 		SubmittedAt:    strings.TrimSpace(fm.Date),
-		Projects:       extractProjects(content, projectIndex),
+		Projects:       projects,
+		BodyHTML:       bodyHTML,
 	}, nil
 }
 
@@ -235,15 +251,56 @@ func extractProjects(body string, index map[string]string) []models.ArchProject 
 		}
 
 		maturity := index[key]
+		description := extractDescription(cardBody)
 
 		projects = append(projects, models.ArchProject{
-			Name:       name,
-			LogoUrl:    logoURL,
-			Maturity:   maturity,
-			UsingSince: usingSince,
+			Name:        name,
+			LogoUrl:     logoURL,
+			Maturity:    maturity,
+			UsingSince:  usingSince,
+			Description: description,
 		})
 	}
 	return projects
+}
+
+// rewriteImageURLs rewrites relative image refs (./images/... or images/...) to
+// absolute raw.githubusercontent.com URLs for the given architecture slug.
+func rewriteImageURLs(body, slug string) string {
+	base := fmt.Sprintf(
+		"https://raw.githubusercontent.com/cncf/architecture/main/content/en/architectures/%s",
+		slug,
+	)
+	return relImgRe.ReplaceAllStringFunc(body, func(match string) string {
+		m := relImgRe.FindStringSubmatch(match)
+		if len(m) < 3 {
+			return match
+		}
+		return fmt.Sprintf("![%s](%s/%s)", m[1], base, m[2])
+	})
+}
+
+// renderMarkdown converts markdown src to HTML using goldmark with GFM extensions.
+func renderMarkdown(src string) (string, error) {
+	var buf bytes.Buffer
+	if err := mdParser.Convert([]byte(src), &buf); err != nil {
+		return "", fmt.Errorf("markdown render: %w", err)
+	}
+	return buf.String(), nil
+}
+
+// extractDescription strips logo lines and meta bullets from a card body and
+// returns the remaining prose as a single space-joined string.
+func extractDescription(cardBody string) string {
+	s := logoLineRe.ReplaceAllString(cardBody, "")
+	s = metaBulletRe.ReplaceAllString(s, "")
+	var parts []string
+	for _, line := range strings.Split(s, "\n") {
+		if t := strings.TrimSpace(line); t != "" && !strings.HasPrefix(t, "{{") {
+			parts = append(parts, t)
+		}
+	}
+	return strings.Join(parts, " ")
 }
 
 // buildProjectIndex builds a lowercase-name → maturity map from landscape items
