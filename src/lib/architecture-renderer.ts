@@ -30,8 +30,6 @@ const MATURITY_COLORS: Record<string, string> = {
   sandbox:    '#8b949e', // muted gray
 };
 
-const MAX_VISIBLE_PROJECTS = 6;
-
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
@@ -54,17 +52,11 @@ function renderProjectChip(p: ArchProject): string {
 function renderProjectRibbon(projects: ArchProject[]): string {
   if (!projects.length) return '';
 
-  const visible = projects.slice(0, MAX_VISIBLE_PROJECTS);
-  const overflow = projects.length - visible.length;
-
-  const chips = visible.map(renderProjectChip).join('');
-  const overflowBadge = overflow > 0
-    ? `<span class="arch-overflow-badge">+${overflow} more</span>`
-    : '';
+  const chips = projects.map(renderProjectChip).join('');
 
   return `<div class="arch-ribbon">
       <div class="arch-ribbon-label">CNCF Projects Used</div>
-      <div class="arch-ribbon-chips">${chips}${overflowBadge}</div>
+      <div class="arch-ribbon-chips">${chips}</div>
     </div>`;
 }
 

@@ -607,17 +607,17 @@ a.showcase-name:hover {
 
 /* Project ribbon — the "trilogy badge" element */
 .arch-ribbon {
-  border-top: 1px solid var(--color-border-default);
-  padding: 10px 14px 12px;
-  background: var(--color-canvas-subtle, rgba(0,0,0,0.02));
+  border-top: 2px solid var(--color-border-default);
+  padding: 14px 16px 16px;
+  background: var(--color-bg-secondary);
 }
 .arch-ribbon-label {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: 6px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
 }
 .arch-ribbon-chips {
   display: flex;
@@ -629,14 +629,14 @@ a.showcase-name:hover {
 .arch-project-chip {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-size: 0.7rem;
+  gap: 4px;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
   background: var(--color-card-bg, #fff);
   border: 1px solid var(--color-border-default);
   border-radius: 999px;
-  padding: 2px 7px 2px 4px;
+  padding: 3px 9px 3px 5px;
   white-space: nowrap;
 }
 .arch-project-logo {
@@ -650,13 +650,7 @@ a.showcase-name:hover {
   border-radius: 50%;
   flex-shrink: 0;
 }
-.arch-project-name { max-width: 80px; overflow: hidden; text-overflow: ellipsis; }
-
-.arch-overflow-badge {
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
-  font-style: italic;
-}
+.arch-project-name { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
 
 /* Reference arch intro banner — matches .category-summary style from people-website */
 .arch-intro {
