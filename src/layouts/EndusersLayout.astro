@@ -5,6 +5,7 @@ import SiteSwitcher from '../components/SiteSwitcher.astro';
 import KubeConBanner from '../components/KubeConBanner.astro';
 import InfoBox from '../components/InfoBox.astro';
 import { getActiveBanners } from '../lib/banners';
+import archData from '../data/architectures.json';
 import '../styles/variables.css';
 import '../styles/layout.css';
 import '../styles/cards.css';
@@ -210,6 +211,24 @@ const base = import.meta.env.BASE_URL;
   <KeyboardHelp />
 
   <div id="kbd-live-region" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+  <!-- Arch data for modal — keyed by slug, embedded at build time -->
+  <script type="application/json" id="arch-data" set:html={JSON.stringify(Object.fromEntries((archData as any[]).map((a: any) => [a.slug, a])))} />
+
+  <!-- Reference Architecture modal -->
+  <dialog id="arch-modal" aria-modal="true" aria-labelledby="arch-modal-title">
+    <div class="arch-modal-dialog">
+      <button class="arch-modal-close" id="arch-modal-close" aria-label="Close architecture details">✕</button>
+      <div class="arch-modal-content" id="arch-modal-content">
+        <!-- Populated by arch-modal.ts -->
+      </div>
+      <div class="arch-modal-footer">
+        <a class="arch-modal-ext-link" id="arch-modal-ext-link" href="#" target="_blank" rel="noopener noreferrer">
+          View on CNCF →
+        </a>
+      </div>
+    </div>
+  </dialog>
 
   <script>
     document.getElementById('help-button')?.addEventListener('click', () => {
