@@ -18,13 +18,15 @@ type SafeArchitecture struct {
 	ArchUrl        string       `json:"archUrl"`
 	SubmittedAt    string       `json:"submittedAt,omitempty"`
 	Projects       []ArchProject `json:"projects,omitempty"`
+	BodyHTML       string       `json:"bodyHTML,omitempty"`
 }
 
 // ArchProject is a single CNCF project used in the reference architecture,
 // extracted from {{< card header="ProjectName" >}} blocks in the markdown body.
 type ArchProject struct {
-	Name       string `json:"name"`
-	LogoUrl    string `json:"logoUrl,omitempty"`
-	Maturity   string `json:"maturity,omitempty"` // "graduated" | "incubating" | "sandbox" | ""
-	UsingSince string `json:"usingSince,omitempty"`
+	Name        string `json:"name"`
+	LogoUrl     string `json:"logoUrl,omitempty"`
+	Maturity    string `json:"maturity,omitempty"` // "graduated" | "incubating" | "sandbox" | ""
+	UsingSince  string `json:"usingSince,omitempty"`
+	Description string `json:"description,omitempty"`
 }
