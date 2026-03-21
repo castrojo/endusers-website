@@ -25,6 +25,7 @@ jobs:
             .sync-cache
             src/data/changelog.json
             src/data/members.json
+            src/data/architectures.json
           key: sync-cache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: sync-cache-${{ runner.os }}-
       - name: Sync data
@@ -36,6 +37,7 @@ jobs:
             .sync-cache
             src/data/changelog.json
             src/data/members.json
+            src/data/architectures.json
           key: sync-cache-${{ runner.os }}-${{ github.run_id }}
       - run: npm ci
       - name: Build

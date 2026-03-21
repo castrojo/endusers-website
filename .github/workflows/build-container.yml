@@ -30,7 +30,7 @@ jobs:
             sync-cache-${{ runner.os }}-
 
       - name: Sync data
-        run: cd endusers-go && go build -o endusers cmd/endusers/main.go && ./endusers
+        run: cd endusers-go && go build -o endusers cmd/endusers/main.go && cd .. && ./endusers-go/endusers
 
       - name: Save cache
         uses: actions/cache/save@v4
